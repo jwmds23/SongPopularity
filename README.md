@@ -9,3 +9,8 @@ The second section allows users to explore how song popularity is distributed ac
 The final "Prediction" section offers an interactive feature where users can input song characteristics to predict its popularity score. By adjusting factors like danceability, energy, key, and loudness, users can see how these changes might affect a song's potential success, represented by a dynamic, updating popularity score.
 
 Overall, this dashboard serves as a practical tool for spotting trends, understanding the musical landscape, and making data-driven decisions in the music industry. Whether you're a marketer looking to promote the next big hit or an executive deciding on which artist to sign, this dashboard provides the insights needed to stay ahead in the fast-paced world of music.
+
+## **Sketch**
+![Summary](Sketch/Summary.png)
+![Features](Sketch/Features.png)
+![Prediction](Sketch/Prediction.png)
