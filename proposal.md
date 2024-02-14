@@ -5,7 +5,9 @@
 
 **Target audience**: Executive in the Market Department
 
-**Purpose**: To occupy the musical market as a large online media service provider is all about capturing the popularity trend. 
+**Purpose**: 
+
+To occupy the musical market as a large online media service provider is all about capturing the popularity trend. 
 It is difficult to know which aspects of a song dominate its popularity when there are thousands of options for song purchase. 
 As a role of Spotify’s data analytics team, we proposed to create a tool for assisting our marketing and management teams 
 with accessible insights into the music trends, named as Spotify Songs Popularity Breadth Dashboard. 
@@ -38,7 +40,7 @@ and other features will serve as the filter, allowing the user to explore more d
 Will is a member of the marketing team at Spotify who wants to [investigate] the current characteristics of the stream music market on Spotify 
 and [detect] music popularity trends to adjust marketing strategies for future music and artist selection. 
 When he logs in to this app, he will see an overview of the distributions of the popularity, 
-the distributions of all genres, the top 10 songs/artists, and popularity of all 12 available features, 
+the distributions of all genres, the average popularity trend by decades, the top 10 songs/artists, and popularity of all 12 available features, 
 including Danceability, Energy, Speechness, Loudness, Key and other features in this dataset. 
 By [multi-selecting] different features, he can [explore] the relationship between the selected features and the song's popularity. 
 To inspect a more detailed and specific area, Will can filter out the data by album release date, 
