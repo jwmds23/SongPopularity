@@ -1,4 +1,5 @@
-## Motivation and Purpose
+## Project Proposal
+### Motivation and Purpose
 
 **Our role**: Data Analytics Team in Spotify
 
@@ -13,7 +14,7 @@ By understanding these dynamics, our marketing executives and decision-makers ca
 This insight is vital for shaping marketing strategies and making informed choices about song selection, 
 ensuring our efforts align with listener preferences and market demands.
 
-## Description of the data
+### Description of the data
 We will visualize a dataset of about 30,000 songs from Spotify. 
 The songs were released between 1957 and 2020, and each song has 23 features. 
 Those features describe:
@@ -23,15 +24,16 @@ Those features describe:
 `track_album_release_date`, `playlist_name`, `playlist_id`, `playlist_genre`, `playlist_subgenre`); 
 - and 12 key features of each song (numeric features with different scales: `danceability`, `energy`, `key`, 
 `loudness`, `mode`, `speechiness`, `acousticness`, `instrumentalness`, `liveness`, `valence`, `tempo`, `duration_ms`).
+
 The relationship between popularity and 12 key features will be the main visualization 
 and other features will serve as the filter, allowing the user to explore more details.
 
-## Research questions and usage scenario
+### Research questions and usage scenario
 **Research questions**
-- what kinds of factors are highly correlated to song popularity or affects it?
-- how to predict the potential popularity of a new song based on its features?
+- What kinds of factors are highly correlated to song popularity and to what extent?
+- How to predict the potential popularity of a new song based on its features?
 
-**usage scenario**
+**Usage scenario**
 
 Will is a member of the marketing team at Spotify who wants to [investigate] the current characteristics of the stream music market on Spotify 
 and [detect] music popularity trends to adjust marketing strategies for future music and artist selection. 
