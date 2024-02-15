@@ -33,7 +33,7 @@ and other features will serve as the filter, allowing the user to explore more d
 ### Research questions and usage scenario
 **Research questions**
 - What kinds of factors are highly correlated to song popularity and to what extent?
-- How to predict the potential popularity of a new song based on its features?
+- How to predict the potential popularity of a new song given its features?
 
 **Usage scenario**
 
