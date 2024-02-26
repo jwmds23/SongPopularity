@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib as plt
 import numpy as np
 from dash import Dash, html, dcc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from joblib import load
@@ -13,12 +13,16 @@ df = pd.read_csv('../data/processed/spotify_songs_processed.csv', parse_dates = 
 
 # load the prediction model and feature scalar
 model = load('support_model/spotify_model.joblib')
+key_scalar = load('support_model/key_scalar.joblib')
 loud_scalar = load('support_model/loud_scalar.joblib')
 dur_scalar = load('support_model/duration_scalar.joblib')
 tempo_scalar = load('support_model/tempo_scalar.joblib')
+key_scalar_mm = load('support_model/key_scalar_mm.joblib')
 loud_scalar_mm = load('support_model/loud_scalar_mm.joblib')
 dur_scalar_mm = load('support_model/duration_scalar_mm.joblib')
 tempo_scalar_mm = load('support_model/tempo_scalar_mm.joblib')
+
+key_options = [{'label': str(i), 'value': i} for i in range(12)]
 
 def track_radar(danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, duration, loud_scalar_mm, dur_scalar_mm, tempo_scalar_mm):
     # initialize the value
@@ -66,7 +70,7 @@ def pop_predict(type, danceability, energy, key, loudness, mode, speechiness, ac
     # initialize the prediction df
     pred_df = pd.DataFrame(
         np.array([danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, duration]).reshape(1, 12),
-        columns = ['danceability', 'energy','key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo', 'duration_ms']
+        columns = ['danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo', 'duration_ms']
     )
     
     # define the track genre variable for prediction
@@ -109,7 +113,132 @@ def pop_predict(type, danceability, energy, key, loudness, mode, speechiness, ac
 
 app = Dash(__name__)
 
-# app.layout = html.Div([
+app.layout = html.Div([
+    html.Div([
+        html.Label('Genre'),
+        dcc.Dropdown(
+            id = 'genre',
+            options = [
+                {'label': 'EDM', 'value': 'edm'},
+                {'label': 'Latin', 'value': 'latin'},
+                {'label': 'Pop', 'value': 'pop'},
+                {'label': 'R&B', 'value': 'r&b'},
+                {'label': 'Rap', 'value': 'rap'},
+                {'label': 'Rock', 'value': 'rock'}
+            ],
+            multi = False,
+            clearable = True,
+            searchable = True,
+            placeholder = 'Please select the genre of the song...'
+        ),
+        html.Label('Danceability'),
+        dcc.Slider(
+            id = 'danceability',
+            min = 0, max = 1, value = 0, marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+            updatemode='drag'
+        ),
+        html.Label('Energy'),
+        dcc.Slider(
+            id = 'energy',
+            min = 0, max = 1, value = 0, marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'}
+        ),
+        html.Label('Key'),
+        dcc.Dropdown(
+            id = 'key',
+            options = key_options,
+            multi = False,
+            clearable = True,
+            placeholder = 'Please select the key...'
+        ),
+        html.Label('Loudness'),
+        dcc.Slider(
+            id = 'loudness',
+            min = -47, max = 1.5, value = -47, marks = {-47: '-47', -40: '-40', -30: '-30', -20: '-20', -10: '-10', 1.5: '1.5'}
+        ),
+        html.Label('Mode'),
+        dcc.Dropdown(
+            id = 'mode',
+            options = [{'label': '0', 'value': 0}, {'label': '1', 'value': 1}],
+            multi = False,
+            clearable = True,
+            placeholder = 'Please select the mode...'
+        ),
+        html.Label('Speechiness'),
+        dcc.Slider(
+            id = 'speechiness',
+            min = 0, max = 1, value = 0, marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'}
+        ),
+        html.Label('Acousticness'),
+        dcc.Slider(
+            id = 'acousticness',
+            min = 0, max = 1, value = 0, marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'}
+        ),
+        html.Label('Instrumentalness'),
+        dcc.Slider(
+            id = 'instrumentalness',
+            min = 0, max = 1, value = 0, marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'}
+        ),
+        html.Label('Liveness'),
+        dcc.Slider(
+            id = 'liveness',
+            min = 0, max = 1, value = 0, marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'}
+        ),
+        html.Label('Valence'),
+        dcc.Slider(
+            id = 'valence',
+            min = 0, max = 1, value = 0, marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'}
+        ),
+        html.Label('Tempo'),
+        dcc.Slider(
+            id = 'tempo',
+            min = 0, max = 240, value = 0, marks = {0: '0', 30: '30', 60: '60', 90: '90', 120: '120', 150: '150', 180: '180', 210: '210', 240: '240'}
+        ),
+        html.Label('Minutes:'),
+        dcc.Input(
+            id='minutes',
+            type='number',
+            placeholder='Enter minutes...',
+            min=0
+        ),
+        html.Label('Seconds:'),
+        dcc.Input(
+            id='seconds',
+            type='number',
+            placeholder='Enter seconds...',
+            min=0,
+            max=59
+        ),
+        html.Button('Apply', id = 'apply', n_clicks = 0),
+        html.Div(id='test')
+    ])
+])
+
+@app.callback(
+    Output('test', 'children'),
+    [Input('apply', 'n_clicks')],
+    [State('genre', 'value'),
+     State('danceability', 'value'),
+     State('energy', 'value'),
+     State('key', 'value'),
+     State('loudness', 'value'),
+     State('mode', 'value'),
+     State('speechiness', 'value'),
+     State('acousticness', 'value'),
+     State('instrumentalness', 'value'),
+     State('liveness', 'value'),
+     State('valence', 'value'),
+     State('tempo', 'value'),
+     State('minutes', 'value'),
+     State('seconds', 'value')
+    ]
+)
+def update_output(n_clicks, genre, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, minutes, seconds):
+    if n_clicks > 0:
+        return f"Result{genre, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, minutes, seconds}"
+    else:
+        return ''
+# def update_output(type):
+#     return pop_predict(type)
 #     html.Label('Release Date'),
 #     html.Div([dcc.DatePickerRange(
 #         id = 'date-select',
