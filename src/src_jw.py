@@ -10,13 +10,14 @@ from dash import dcc, html, Input, Output, ClientsideFunction
 from dash.dependencies import Input, Output, State
 from vega_datasets import data
 alt.data_transformers.disable_max_rows()
+import dash_bootstrap_components as dbc
 #alt.data_transformers.enable("vegafusion")
 
 
 app = dash.Dash(
     __name__,
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
-    external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css']
+    external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
 app.title = "Spotify Song Popularity by Feature"
 
@@ -88,52 +89,59 @@ def create_feature_distribution_charts(df, selected_features):
     return combined_chart.to_html()
 
 
-app.layout = html.Div([
+app.layout = dbc.Container(
     dcc.Tabs([
         dcc.Tab(label='Summary', children=[
             # Add components for Summary tab
         ]),
-        dcc.Tab(label='By Feature', children=[
-            html.Div([
-                dcc.DatePickerRange(
-                    id='date-picker-range',
-                    start_date_placeholder_text='Start Date',
-                    end_date_placeholder_text='End Date',
+        dcc.Tab(label='By Feature', children=[  
+            dbc.Row([
+                dbc.Col(
+                    html.Div([
+                        dcc.DatePickerRange(
+                            id='date-picker-range',
+                            start_date_placeholder_text='Start Date',
+                            end_date_placeholder_text='End Date',
                     # Set default dates if needed
+                        ),
+                        dcc.Dropdown(
+                            id='genre-dropdown',
+                            options=[{'label': 'Select All', 'value': 'all'}] + [{'label': genre, 'value': genre} for genre in genre_list],
+                            value=['all'],  # Default value
+                            multi=True
+                        ),
+                        dcc.Dropdown(
+                            id='subgenre-dropdown',
+                            options=[{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list],
+                            value=['all'],  # Default value
+                            multi=True
+                        ),
+                        dcc.Dropdown(
+                            id='artist-dropdown',
+                            options=[{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list],
+                            value=['all'],  # Default value
+                            multi=True
+                        ),
+                        dcc.Dropdown(
+                            id='feature-dropdown',
+                            options=[{'label': 'Select All', 'value': 'all'}] + [{'label': feature, 'value': feature} for feature in feature_list],
+                            value=['all'],  # Default value
+                            multi=True
+                        ),
+                        html.Button('Apply', id='apply-button', n_clicks=0),
+                    ]),
                 ),
-                dcc.Dropdown(
-                    id='genre-dropdown',
-                    options=[{'label': 'Select All', 'value': 'all'}] + [{'label': genre, 'value': genre} for genre in genre_list],
-                    value=['all'],  # Default value
-                    multi=True
-                ),
-                dcc.Dropdown(
-                    id='subgenre-dropdown',
-                    options=[{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list],
-                    value=['all'],  # Default value
-                    multi=True
-                ),
-                dcc.Dropdown(
-                    id='artist-dropdown',
-                    options=[{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list],
-                    value=['all'],  # Default value
-                    multi=True
-                ),
-                dcc.Dropdown(
-                    id='feature-dropdown',
-                    options=[{'label': 'Select All', 'value': 'all'}] + [{'label': feature, 'value': feature} for feature in feature_list],
-                    value=['all'],  # Default value
-                    multi=True
-                ),
-                html.Button('Apply', id='apply-button', n_clicks=0),
+                dbc.Col(
+                    html.Div(id='feature-charts-container'),
+                ),            
             ]),
-            html.Div(id='feature-charts-container')
-        ]),
+        ]),    
         dcc.Tab(label='Prediction', children=[
             # Add components for Prediction tab
         ]),
-    ])
-])
+    ]),
+    fluid=True
+)
 
 # Define callback to update charts
 def handle_select_all(selected_values, options_list):
