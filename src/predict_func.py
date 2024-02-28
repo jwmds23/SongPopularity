@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import altair as alt
 import plotly.graph_objs as go
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.ensemble import RandomForestRegressor
@@ -45,7 +46,9 @@ def track_radar(danceability, energy, key, loudness, mode, speechiness, acoustic
                 range=[0, 1]
             )
         ),
-        showlegend=False
+        showlegend=False,
+        plot_bgcolor='rgba(0,0,0,0)',  # Set background color to transparent
+        paper_bgcolor='rgba(0,0,0,0)'
     )
     
     return fig
@@ -82,3 +85,24 @@ def pop_predict(type, danceability, energy, key, loudness, mode, speechiness, ac
     pred_df = pd.concat([dummy_df, pred_df], axis=1)
 
     return model.predict(pred_df)[0]
+
+def pred_chart(result):    
+    df_pred = pd.DataFrame({'result': [result, 100-result],
+                        'category': [1, 2]})
+    circle_chart = alt.Chart(df_pred).mark_arc(innerRadius=80).encode(
+        theta=alt.Theta('result'),
+        color=alt.condition(
+            alt.datum.category==1,
+            alt.value('orange'),
+            alt.value('lightgrey')
+        )
+    )
+
+    text_chart = alt.Chart(df_pred.iloc[0:1, ]).mark_text(size=60).encode(
+        text = 'result',
+        color= alt.Color('result', scale=alt.Scale(scheme='lightorange'), legend=None)
+    )
+
+    pred = circle_chart+text_chart
+
+    return pred.to_html()
