@@ -19,7 +19,8 @@ alt.data_transformers.disable_max_rows()
 app = dash.Dash(
     __name__,
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
-    external_stylesheets=[dbc.themes.BOOTSTRAP]
+    # external_stylesheets=[dbc.themes.BOOTSTRAP]
+    #  external_stylesheets=["assets/sb-admin-2.css"]
 )
 app.title = "Spotify Song Popularity"
 
@@ -154,12 +155,12 @@ app.layout = dbc.Container(
                         ],
                         ),
                     html.Div(
-                        id="top-10-popularity-songs-chart",
+                        id="top-10-popularity-songs-artists-chart",
                         children=[
-                            html.H6("Top 10 Popularity Songs"),
+                            html.H6("Top 10 Popularity Songs & Artists"),
                             html.Iframe(
-                                id="top-10-popularity-songs-chart-iframe",
-                                style={'border-width': '0', 'width': '100%', 'height': '400px'},
+                                id="top-10-popularity-songs-artists-chart-iframe",
+                                style={'border-width': '0', 'width': '100%', 'height': '1000px'},
                             ),
                         ],
                     ),                    
@@ -177,13 +178,36 @@ app.layout = dbc.Container(
                         ],
                     ),
                     html.Div(
-                        id="top-10-average-popularity-artists-chart",
+                        id="feature_scatter-chart",
                         children=[
-                            html.H6("Top 10 Average Popularity Artists"),
+                            html.H6("Two-Feature Scatter Plot"),
+                            "Release Year",
+                            dcc.Slider(id='year-slider', 
+                                       min=1957, max=2021, 
+                                       value=2000,
+                                       marks={1960: '1960', 1970: '1970', 1980: '1980', 1990: '1990', 2000: '2000', 2010: '2010'},
+                                       updatemode='drag',
+                                       step=1),
+                            "Feature 1",
+                            dcc.Dropdown(
+                                    id='feature1-dropdown',
+                                    options=[{'label': feature, 'value': feature} for feature in feature_list],
+                                    value='danceability',
+                                    multi=False,
+                                    style={'width': '200px'} 
+                                ),
+                            "Feature 2",
+                            dcc.Dropdown(
+                                    id='feature2-dropdown',
+                                    options=[{'label': feature, 'value': feature} for feature in feature_list],
+                                    value='liveness',
+                                    multi=False,
+                                    style={'width': '200px'}
+                                ),
                             html.Iframe(
-                                id="top-10-average-popularity-artists-chart-iframe",
-                                style={'border-width': '0', 'width': '100%', 'height': '400px'},
-                            ),
+                                id="feature_scatter-chart-iframe",
+                                style={'border-width': '0', 'width': '100%', 'height': '800px'},
+                            ),     
                         ],
                     ),
                     ],width="4")]
@@ -618,9 +642,9 @@ def update_output(n_clicks, start_date, end_date, selected_genres, selected_subg
 )
 def update_decade_trend_line(n_clicks, start_date, end_date, selected_genres, selected_subgenres, selected_artists):
     filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
-    chart=alt.Chart(filtered_df).mark_line(color='red',opacity=0.4).encode(
+    chart=alt.Chart(filtered_df).mark_line(color='darkgreen',opacity=0.5).encode(
         x=alt.X('decade',type='ordinal',title=None),
-        y=alt.Y('mean(track_popularity)',scale=alt.Scale(zero=False),title='average popularity'),
+        y=alt.Y('mean(track_popularity)',scale=alt.Scale(zero=False),title='Average Popularity'),
     ).properties(width=300)
     return chart.to_html()
 
@@ -641,16 +665,17 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
     chart1=alt.Chart(filtered_df).mark_bar(color='darkred',opacity=0.7).encode(
         x=alt.X('nominal_popularity',type='ordinal',title=None,sort=['low','medium','high']),
         y=alt.Y('count()',title='Count of Records'),
+        color= alt.Color('nominal_popularity', legend=None)
     ).properties(height=300,width=100).transform_filter(sel1).add_params(sel2)
     chart2=alt.Chart(filtered_df).mark_arc().encode(
             color=alt.Color('playlist_genre',legend=alt.Legend(title=None)),
-            theta='count()',
+            theta='count()'
         ).properties(height=300,width=150).add_params(sel1).transform_filter(sel2)
-    return (chart1|chart2).to_html()
+    return (alt.hconcat(chart1, chart2).resolve_scale(color='independent')).to_html()
 
 
 @app.callback(
-    Output('top-10-popularity-songs-chart-iframe', 'srcDoc'),
+    Output('top-10-popularity-songs-artists-chart-iframe', 'srcDoc'),
     [Input('apply-button-1', 'n_clicks')],
     [State('date-picker-range-1', 'start_date'),
      State('date-picker-range-1', 'end_date'),
@@ -658,36 +683,64 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
      State('subgenre-dropdown-1', 'value'),
      State('artist-dropdown-1', 'value')]
 )
-def update_top_10_popularity_songs(n_clicks, start_date, end_date,selected_genres, selected_subgenres, selected_artists):
+def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,selected_genres, selected_subgenres, selected_artists):
     filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
-    popularity_by_songs = filtered_df[['track_name','track_popularity']].groupby('track_name').mean('track_popularity').reset_index()
+    df_new=filtered_df[['track_name','track_artist','track_popularity']].drop_duplicates()
+    popularity_by_songs = df_new[['track_name','track_popularity']].groupby('track_name').mean('track_popularity').reset_index()
     top10_songs=popularity_by_songs.nlargest(10,"track_popularity")
     popularity_min=top10_songs['track_popularity'].min()-5
-    chart = alt.Chart(top10_songs).mark_bar(clip=True).encode(
+    popularity_by_artists = df_new[['track_artist','track_popularity']].groupby('track_artist').mean('track_popularity').reset_index()
+    top10_artists=popularity_by_artists.nlargest(10,"track_popularity")
+    popularity_min=top10_artists['track_popularity'].min()-5
+    chart1 = alt.Chart(top10_songs).mark_bar(clip=True,color='darkgreen',opacity=0.4).encode(
+        x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Popularity'),
+        y=alt.Y("track_name", sort='-x',title=None) # sort the x value in descent order
+    ).properties(title='Top 10 Songs')
+    chart2 = alt.Chart(top10_artists).mark_bar(clip=True,color='darkgreen',opacity=0.8).encode(
         x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Average Popularity'),
-        y=alt.Y("track_name", sort='-x') # sort the x value in descent order
-    )
-    return chart.to_html()
+        y=alt.Y("track_artist", sort='-x',title=None) # sort the x value in descent order
+    ).properties(title='Top 10 Artists')
+    return (chart1&chart2).to_html()
+
 
 @app.callback(
-    Output('top-10-average-popularity-artists-chart-iframe', 'srcDoc'),
-    [Input('apply-button-1', 'n_clicks')],
+    Output('feature_scatter-chart-iframe', 'srcDoc'),
+    [Input('apply-button-1', 'n_clicks'),
+     Input('year-slider','value'),
+     Input('feature1-dropdown', 'value'),
+     Input('feature2-dropdown', 'value')],
     [State('date-picker-range-1', 'start_date'),
      State('date-picker-range-1', 'end_date'),
      State('genre-dropdown-1', 'value'),
      State('subgenre-dropdown-1', 'value'),
-     State('artist-dropdown-1', 'value')]
+     State('artist-dropdown-1', 'value')]   
 )
-def update_top_10_popularity_artists(n_clicks, start_date, end_date, selected_genres, selected_subgenres, selected_artists):
+def update_feature_scatter(n_clicks, select_year, f1, f2, start_date, end_date, selected_genres, selected_subgenres, selected_artists):
     filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
-    popularity_by_artists = filtered_df[['track_artist','track_popularity']].groupby('track_artist').mean('track_popularity').reset_index()
-    top10_artists=popularity_by_artists.nlargest(10,"track_popularity")
-    popularity_min=top10_artists['track_popularity'].min()-5
-    chart = alt.Chart(top10_artists).mark_bar(clip=True).encode(
-        x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Average Popularity'),
-        y=alt.Y("track_artist", sort='-x') # sort the x value in descent order
+    df_new = filtered_df[filtered_df['track_album_release_date'].dt.year == select_year]
+    brush = alt.selection_interval()
+    sel = alt.selection_point(fields=['playlist_genre'])
+    graph = alt.Chart(df_new).mark_circle().encode(
+        x = f1,
+        y = f2,
+        color = alt.condition(
+            brush,
+            'nominal_popularity',
+            alt.value('grey'),
+            title='Popularity'),
+        tooltip = ['track_name', 'track_artist', 'track_album_name', 'track_popularity']
+    ).properties(height=300).add_params(brush).transform_filter(sel)
+
+    graph1 = alt.Chart(df_new).mark_bar().encode(
+    x = alt.X('count()'),
+    y = alt.Y('playlist_genre', title=None),
+    color = alt.Color('playlist_genre',legend=None),
+    ).properties(height=100).add_params(
+        sel
+    ).transform_filter(
+        brush
     )
-    return chart.to_html()
+    return (alt.vconcat(graph, graph1).resolve_scale(color='independent')).to_html()
 
 @app.callback(
     Output('danceability-output', 'children'),
