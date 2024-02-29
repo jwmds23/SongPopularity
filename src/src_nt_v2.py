@@ -147,7 +147,7 @@ app.layout = dbc.Container(
                     html.Div(
                         id="popularity-level-distribution-chart",
                         children=[
-                            html.H6("Popularity and Genre Distribution"),
+                            html.H4("Popularity and Genre Distribution"),
                             html.Iframe(
                                 id="popularity-level-distribution-chart-iframe",
                                 style={'border-width': '0', 'width': '100%', 'height': '400px'},
@@ -157,7 +157,7 @@ app.layout = dbc.Container(
                     html.Div(
                         id="top-10-popularity-songs-artists-chart",
                         children=[
-                            html.H6("Top 10 Popularity Songs & Artists"),
+                            html.H4("Top 10 Popularity Songs & Artists"),
                             html.Iframe(
                                 id="top-10-popularity-songs-artists-chart-iframe",
                                 style={'border-width': '0', 'width': '100%', 'height': '1000px'},
@@ -170,7 +170,7 @@ app.layout = dbc.Container(
                     html.Div(
                         id="decade-trend-line-chart",
                         children=[
-                            html.H6("Decade Trend Line Chart"),
+                            html.H4("Decade Trend Line Chart"),
                             html.Iframe(
                                 id="decade-trend-line-chart-iframe",
                                 style={'border-width': '0', 'width': '100%', 'height': '300px'},
@@ -180,7 +180,7 @@ app.layout = dbc.Container(
                     html.Div(
                         id="feature_scatter-chart",
                         children=[
-                            html.H6("Two-Feature Scatter Plot"),
+                            html.H4("Two-Feature Scatter Plot"),
                             "Release Year",
                             dcc.Slider(id='year-slider', 
                                        min=1957, max=2021, 
