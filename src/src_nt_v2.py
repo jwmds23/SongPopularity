@@ -1,4 +1,5 @@
 # python
+import os
 import json
 import pandas as pd
 import numpy as np
@@ -6,8 +7,12 @@ import datetime
 from datetime import datetime as dt
 import altair as alt
 import dash
+import plotly.graph_objs as go
 from dash import dcc, html, Input, Output,State
 import dash_bootstrap_components as dbc
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+import predict_func
 alt.data_transformers.disable_max_rows()
 # alt.data_transformers.enable("vegafusion")
 
@@ -257,12 +262,253 @@ app.layout = dbc.Container(
                         ]),width="4",
                 ),
                 dbc.Col(
-                    [html.Div(id='feature-charts-container')],width="8"
+                    [html.H3("Popularity Distribution"),
+                     html.Div(id='feature-charts-container')
+                    ],width="8"
                 )
             ]),            
             ]),   
         dcc.Tab(label='Prediction', children=[
-            # Add components for Prediction tab
+            dbc.Row([
+                dbc.Col([
+                dbc.Container([
+                    html.H3('Set Features for Your Song'),
+                    dbc.Row([
+                        dbc.Col([
+                            html.Div([
+                                html.Label('Danceability'),
+                                dcc.Slider(
+                                    id='danceability',
+                                    min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                                    updatemode='drag'
+                                )], style={'width': '110%'}),
+                        ], width=5),
+                        dbc.Col([
+                            html.Br(),
+                            html.Div(id='danceability-output')],
+                            style={'margin-left': '-5px', 'margin-top': '4.5px'},
+                            width=1),
+                        dbc.Col([
+                            html.Div([
+                                html.Label('Energy'),
+                                dcc.Slider(
+                                    id='energy',
+                                    min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                                    updatemode='drag'
+                                )], style={'width': '110%'})
+                        ]),
+                        dbc.Col([
+                            html.Br(),
+                            html.Div(id='energy-output')],
+                            style={'margin-left': '-5px', 'margin-top': '4.5px'},
+                            width=1),
+                        html.Br()
+                    ], style={'border-top': '3px solid lightgrey', 'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px', 'border-top-left-radius':'10px', 'border-top-right-radius':'10px'}),
+                    dbc.Row([
+                        dbc.Col([
+                            html.Div([
+                                html.Label('Speechiness'),
+                                dcc.Slider(
+                                    id='speechiness',
+                                    min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                                    updatemode='drag'
+                                )], style={'width': '110%'}
+                            )
+                        ], width=5),
+                        dbc.Col([
+                            html.Br(),
+                            html.Div(id='speechiness-output')],
+                            style={'margin-left': '-5px', 'margin-top': '4.5px'},
+                            width=1),
+                        dbc.Col([
+                            html.Div([
+                                html.Label('Acousticness'),
+                                dcc.Slider(
+                                    id='acousticness',
+                                    min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                                    updatemode='drag'
+                                )], style={'width': '110%'}
+                            )
+                        ]),
+                        dbc.Col([
+                            html.Br(),
+                            html.Div(id='acousticness-output')],
+                            style={'margin-left': '-5px', 'margin-top': '4.5px'},
+                            width=1),
+                        html.Br()
+                    ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+                    dbc.Row([
+                        dbc.Col([
+                            html.Div([
+                                html.Label('Instrumentalness'),
+                                dcc.Slider(
+                                    id='instrumentalness',
+                                    min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                                    updatemode='drag'
+                                )], style={'width': '110%'})
+                            ], width=5),
+                        dbc.Col([
+                            html.Br(),
+                            html.Div(id='instrumentalness-output')],
+                            style={'margin-left': '-5px', 'margin-top': '4.5px'},
+                            width=1),
+                        dbc.Col([
+                                html.Div([
+                                    html.Label('Liveness'),
+                                    dcc.Slider(
+                                        id='liveness',
+                                        min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                                        updatemode='drag'
+                                    )], style={'width': '110%'}
+                                )
+                            ]),
+                        dbc.Col([
+                            html.Br(),
+                            html.Div(id='liveness-output')],
+                            style={'margin-left': '-5px', 'margin-top': '4.5px'},
+                            width=1),
+                        html.Br()
+                        ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+                    dbc.Row([
+                        dbc.Col([
+                            html.Div([
+                                html.Label('Valence'),
+                                dcc.Slider(
+                                    id='valence',
+                                    min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                                    updatemode='drag')
+                            ], style={'width': '110%'})
+                        ], width=5),
+                        dbc.Col([
+                            html.Br(),
+                            html.Div(id='valence-output')],
+                            style={'margin-left': '-5px', 'margin-top': '4.5px'},
+                            width=1),
+                        dbc.Col([
+                            html.Div([
+                                html.Label('Loudness'),
+                                dcc.Slider(
+                                    id='loudness',
+                                    min=-47, max=1.5, value=-47, marks={-47: '-47', -40: '-40', -30: '-30', -20: '-20', -10: '-10', 1.5: '1.5'},
+                                    updatemode='drag'
+                                )], style={'width': '110%'}
+                            )
+                        ]),
+                        dbc.Col([
+                            html.Br(),
+                            html.Div(id='loudness-output')],
+                            style={'margin-left': '-5px', 'margin-top': '4.5px'},
+                            width=1),
+                        html.Br()
+                    ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+                    dbc.Row([
+                        dbc.Col([
+                                html.Div([
+                                    html.Label('Tempo'),
+                                    dcc.Slider(
+                                        id='tempo',
+                                        min=0, max=240, value=0, marks={0: '0', 30: '30', 60: '60', 90: '90', 120: '120', 150: '150', 180: '180', 210: '210', 240: '240'},
+                                        updatemode='drag'
+                                    )], style={'width': '110%'}
+                                )
+                            ], width=5),
+                        dbc.Col([
+                            html.Br(),
+                            html.Div(id='tempo-output')],
+                            style={'margin-left': '-5px', 'margin-top': '4.5px'},
+                            width=1),
+                        dbc.Col([
+                            html.Div([  
+                                html.Label('Mode'),
+                                dcc.Dropdown(
+                                    id='mode',
+                                    options=[{'label': '0', 'value': 0}, {'label': '1', 'value': 1}],
+                                    multi=False,
+                                    clearable=True,
+                                    placeholder='Please select the mode...'
+                                )], style={'width': '100%', 'margin-left':'5px'}
+                            )
+                        ]),
+                        html.Br()
+                    ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}), 
+                    dbc.Row([
+                        dbc.Col([
+                            html.Div([
+                                html.Label('Genre'),
+                                dcc.Dropdown(
+                                    id='genre',
+                                    options=[
+                                        {'label': 'EDM', 'value': 'edm'},
+                                        {'label': 'Latin', 'value': 'latin'},
+                                        {'label': 'Pop', 'value': 'pop'},
+                                        {'label': 'R&B', 'value': 'r&b'},
+                                        {'label': 'Rap', 'value': 'rap'},
+                                        {'label': 'Rock', 'value': 'rock'}
+                                    ],
+                                    multi=False,
+                                    clearable=True,
+                                    searchable=True,
+                                    placeholder='Please select the genre of the song...')
+                            ], style={'width': '100%'})
+                        ]),
+                        dbc.Col([
+                            html.Div([
+                                html.Label('Key'),
+                                dcc.Dropdown(
+                                    id='key',
+                                    options=[{'label': str(i), 'value': i} for i in range(12)],
+                                    multi=False,
+                                    clearable=True,
+                                    placeholder='Please select the key...'
+                            )], style={'width': '100%'})
+                        ]),
+                        html.Br()
+                    ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+                    dbc.Row([
+                        html.Label('Duration'),
+                        dbc.Col([
+                            html.Div([
+                                dcc.Input(
+                                    id='minutes',
+                                    type='number',
+                                    placeholder='Enter minutes...',
+                                    min=0,
+                                    style={'border': '2px solid lightgrey', 'border-radius': '10px'})
+                                ])
+                        ]),
+                        dbc.Col([html.Label('minutes')], style={'margin-left': '-10px'}),
+                        dbc.Col([
+                            html.Div([
+                                dcc.Input(
+                                    id='seconds',
+                                    type='number',
+                                    placeholder='Enter seconds...',
+                                    min=0,
+                                    max=59,
+                                    style={'border': '2px solid lightgrey', 'border-radius': '10px'})
+                            ])
+                        ]),
+                        dbc.Col([html.Label('seconds')], style={'margin-left': '-10px'})
+                    ],style={'border-bottom': '3px solid lightgrey', 'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px', 'border-bottom-left-radius':'10px', 'border-bottom-right-radius':'10px'}),
+                    html.Br(),
+                    dbc.Row([
+                        dbc.Col([
+                        html.Button('APPLY', id='apply', n_clicks=0, style={'border': '2px solid lightgrey', 'background-color': 'lightgrey', 'color': 'black', 'fontweight': 'bold', 'border-radius': '10px'})])]),
+                        dbc.Col([])
+                ])
+                ]),
+                dbc.Col([
+                dbc.Container([
+                    dbc.Col([
+                        html.H3('The Predicted Popularity'),
+                        dbc.Row([
+                        html.Iframe(id='pred-result',width=400,height=350)], style={'margin': '0 auto -70px 140px'}),
+                        dbc.Row([
+                        dcc.Graph(id='pred-radar', style={'margin': '0 auto', 'width':'600px', 'height':'420px'})])
+                    ], style={'align':'center'})
+                ])
+        ])
+    ])
             ]),
     ]),
     fluid=True
@@ -271,33 +517,55 @@ app.layout = dbc.Container(
 def create_feature_distribution_charts(df, selected_features):
     charts = []
     
+    # Define a single selection that binds to the legend and allows toggling
+    selection = alt.selection_point(fields=['nominal_popularity'], bind='legend')
+
+    popularity_colors = {
+        'high': '#ff7f0e',  
+        'medium': '#17becf',  
+        'low': '#9467bd', 
+    }
+
     # Determine the layout based on the number of selected features
-    layout_columns = 2 if len(selected_features) > 1 else 1
+    layout_columns = 3 if len(selected_features) > 1 else 1
     
     for feature in selected_features:
         # Check if the feature is 'key' or 'mode' for categorical encoding, else treat as numerical
         if feature in ['key', 'mode']:  # Categorical features
-            chart = alt.Chart(df).mark_bar().encode(
-                alt.X(f"{feature}:N", sort='-y'),
-                alt.Y('count()', stack=None),
-                alt.Color('nominal_popularity:N', legend=alt.Legend(title="Popularity"), scale=alt.Scale(scheme='set2'))
+            chart = alt.Chart(df).mark_bar(tooltip=True).encode(
+                alt.X(f"{feature}:N", sort='-y', title=feature.capitalize()),
+                alt.Y('count()'),
+                alt.Color('nominal_popularity:N', legend=alt.Legend(title="Select Popularity Level", symbolSize= 200), scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),
+                tooltip=[alt.Tooltip(f"{feature}:N"), alt.Tooltip('count()', title='Count')]
+            ).add_params(
+                selection
+            ).transform_filter(
+                selection
             )
         else:  # Numerical features
             chart = alt.Chart(df).mark_bar().encode(
-                alt.X(f"{feature}:Q", bin=True),
-                alt.Y('count()', stack=None),
-                alt.Color('nominal_popularity:N', legend=alt.Legend(title="Popularity"), scale=alt.Scale(scheme='set2'))
+                alt.X(f"{feature}:Q", bin=True, title=feature.capitalize().replace(' (binned)', '')),
+                alt.Y('count()', title=None),
+                alt.Color('nominal_popularity:N', legend=alt.Legend(title="Select Popularity Level", symbolSize= 200), scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),
+                tooltip=[alt.Tooltip(f"{feature}:Q", bin=True), alt.Tooltip('count()', title='Count')]
+            ).add_params(
+                selection
+            ).transform_filter(
+                selection
             )
         
         charts.append(chart)
     
     # Combine all charts into a single chart, adjusting the layout based on the number of charts
     if len(charts) > 1:
-        combined_chart = alt.hconcat(*[alt.vconcat(*charts[i::layout_columns]).resolve_scale(y='independent') for i in range(layout_columns)]).configure_view(
-            strokeWidth=0
-        ).configure_range(category={'scheme': 'set2'})
+        combined_chart = alt.hconcat(*[alt.vconcat(*charts[i::layout_columns]).resolve_scale(y='independent') for i in range(layout_columns)])
     else:
-        combined_chart = charts[0].configure_range(category={'scheme': 'set2'})  # If only one chart, just use it directly
+        combined_chart = charts[0]  # If only one chart, just use it directly
+    
+    # Apply global configurations
+    combined_chart = combined_chart.configure_view(
+        strokeWidth=0
+    )
     
     return combined_chart.to_html()
 
@@ -473,6 +741,98 @@ def update_feature_scatter(n_clicks, select_year, f1, f2, start_date, end_date, 
         brush
     )
     return (alt.vconcat(graph, graph1).resolve_scale(color='independent')).to_html()
+
+@app.callback(
+    Output('danceability-output', 'children'),
+    Input('danceability', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('energy-output', 'children'),
+    Input('energy', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('speechiness-output', 'children'),
+    Input('speechiness', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('acousticness-output', 'children'),
+    Input('acousticness', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('instrumentalness-output', 'children'),
+    Input('instrumentalness', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('liveness-output', 'children'),
+    Input('liveness', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('valence-output', 'children'),
+    Input('valence', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('loudness-output', 'children'),
+    Input('loudness', 'value') 
+)
+def update_output(value):
+    return round(value, 1)
+
+@app.callback(
+    Output('tempo-output', 'children'),
+    Input('tempo', 'value') 
+)
+def update_output(value):
+    return round(value, 0)
+
+@app.callback(
+    [Output('pred-result', 'srcDoc'),
+     Output('pred-radar', 'figure')],
+    [Input('apply', 'n_clicks')],
+    [State('genre', 'value'),
+     State('danceability', 'value'),
+     State('energy', 'value'),
+     State('key', 'value'),
+     State('loudness', 'value'),
+     State('mode', 'value'),
+     State('speechiness', 'value'),
+     State('acousticness', 'value'),
+     State('instrumentalness', 'value'),
+     State('liveness', 'value'),
+     State('valence', 'value'),
+     State('tempo', 'value'),
+     State('minutes', 'value'),
+     State('seconds', 'value')
+    ]
+)
+def update_output(n_clicks, genre, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, minutes, seconds):
+    if n_clicks > 0:
+        duration_ms = minutes * 60000 + seconds * 1000   # transfer the time to miliseconds
+        result = predict_func.pred_chart(round(predict_func.pop_predict(genre, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, duration_ms), 0))
+        radar = predict_func.track_radar(danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, duration_ms)
+        return result, radar
+    else:
+        return predict_func.pred_chart(0), predict_func.track_radar(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
 if __name__ == "__main__":
     app.run_server(debug=True)
