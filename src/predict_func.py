@@ -108,5 +108,7 @@ def pred_chart(result):
     )
 
     pred = circle_chart+text_chart
+    
+    pred.configure_view(strokeWidth=0)
 
     return pred.to_html()

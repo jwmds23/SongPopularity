@@ -19,7 +19,7 @@ alt.data_transformers.disable_max_rows()
 app = dash.Dash(
     __name__,
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
-    # external_stylesheets=[dbc.themes.BOOTSTRAP]
+    external_stylesheets=[dbc.themes.BOOTSTRAP]
     #  external_stylesheets=["assets/sb-admin-2.css"]
 )
 app.title = "Spotify Song Popularity"
