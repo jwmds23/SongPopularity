@@ -145,15 +145,15 @@ app.layout = dbc.Container(
                 dbc.Col([
                     # The first plot column 
                     html.Div(
-                        id="decade-trend-line-chart",
+                        id="popularity-level-distribution-chart",
                         children=[
-                            html.H6("Decade Trend Line Chart"),
+                            html.H6("Popularity and Genre Distribution"),
                             html.Iframe(
-                                id="decade-trend-line-chart-iframe",
+                                id="popularity-level-distribution-chart-iframe",
                                 style={'border-width': '0', 'width': '100%', 'height': '400px'},
                             ),
                         ],
-                        ),
+                    ),
                     html.Div(
                         id="top-10-popularity-songs-artists-chart",
                         children=[
@@ -168,15 +168,15 @@ app.layout = dbc.Container(
                 dbc.Col([
                     # The second plot column
                     html.Div(
-                        id="popularity-level-distribution-chart",
+                        id="decade-trend-line-chart",
                         children=[
-                            html.H6("Popularity and Genre Distribution"),
+                            html.H6("Decade Trend Line Chart"),
                             html.Iframe(
-                                id="popularity-level-distribution-chart-iframe",
-                                style={'border-width': '0', 'width': '100%', 'height': '400px'},
+                                id="decade-trend-line-chart-iframe",
+                                style={'border-width': '0', 'width': '100%', 'height': '300px'},
                             ),
                         ],
-                    ),
+                        ),
                     html.Div(
                         id="feature_scatter-chart",
                         children=[
@@ -188,22 +188,26 @@ app.layout = dbc.Container(
                                        marks={1960: '1960', 1970: '1970', 1980: '1980', 1990: '1990', 2000: '2000', 2010: '2010'},
                                        updatemode='drag',
                                        step=1),
-                            "Feature 1",
-                            dcc.Dropdown(
-                                    id='feature1-dropdown',
-                                    options=[{'label': feature, 'value': feature} for feature in feature_list],
-                                    value='danceability',
-                                    multi=False,
-                                    style={'width': '200px'} 
-                                ),
-                            "Feature 2",
-                            dcc.Dropdown(
-                                    id='feature2-dropdown',
-                                    options=[{'label': feature, 'value': feature} for feature in feature_list],
-                                    value='liveness',
-                                    multi=False,
-                                    style={'width': '200px'}
-                                ),
+                            dbc.Row([
+                                dbc.Col([
+                                    "Feature 1",
+                                    dcc.Dropdown(
+                                            id='feature1-dropdown',
+                                            options=[{'label': feature, 'value': feature} for feature in feature_list],
+                                            value='danceability',
+                                            multi=False,
+                                            style={'width': '200px'} 
+                                        ),]),
+                                dbc.Col([
+                                    "Feature 2",
+                                    dcc.Dropdown(
+                                            id='feature2-dropdown',
+                                            options=[{'label': feature, 'value': feature} for feature in feature_list],
+                                            value='liveness',
+                                            multi=False,
+                                            style={'width': '200px'}
+                                        ),]),
+                            ]),
                             html.Iframe(
                                 id="feature_scatter-chart-iframe",
                                 style={'border-width': '0', 'width': '100%', 'height': '800px'},
@@ -645,7 +649,7 @@ def update_decade_trend_line(n_clicks, start_date, end_date, selected_genres, se
     chart=alt.Chart(filtered_df).mark_line(color='darkgreen',opacity=0.5).encode(
         x=alt.X('decade',type='ordinal',title=None),
         y=alt.Y('mean(track_popularity)',scale=alt.Scale(zero=False),title='Average Popularity'),
-    ).properties(width=300)
+    ).properties(height=200, width=400)
     return chart.to_html()
 
 
