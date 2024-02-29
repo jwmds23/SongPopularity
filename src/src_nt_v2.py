@@ -73,11 +73,7 @@ def summary_description_card():
     return html.Div(
         id="description-card-1",
         children=[
-            html.H3("Spotify Song Popularity Summary"),
-            html.Div(
-                id="intro-1",
-                children="In this section, users can find visual representations of the average popularity trending, the general distribution of all songs' popularity, as well as breakdowns by different genres and rankings of songs and artists.",
-            ),
+            html.H3("Filter Menu"),
             html.Br(),    
             ],
     )
@@ -89,18 +85,15 @@ def feature_description_card():
     return html.Div(
         id="description-card-2",
         children=[
-            html.H3("Spotify Song Popularity by Feature"),
-            html.Div(
-                id="intro-2",
-                children="In this section, users can explore how song popularity is distributed across the technical features of the songs, including danceability, duration, key, modality, and more. Users can select and customize filters via a dropdown menu for their own purposes.",
-            ),
+            html.H3("Filter Menu"),
             html.Br(),    
             ],
     )
 
 
 # Define the layout of the Dash app
-app.layout = dbc.Container(
+app.layout = dbc.Container([
+    html.H1("Spotify Song Popularity Analysis", style={'textAlign': 'center'}),
     dcc.Tabs([
         dcc.Tab(label='Summary', children=[
             dbc.Row([
@@ -515,8 +508,8 @@ app.layout = dbc.Container(
     ])
             ]),
     ]),
-    fluid=True
-)
+    
+],fluid=True)
 
 def create_feature_distribution_charts(df, selected_features):
     charts = []
