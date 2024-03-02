@@ -27,6 +27,22 @@ app.title = "Spotify Song Popularity"
 server = app.server
 app.config.suppress_callback_exceptions = True
 
+# set the background of all altair graphs to transparent
+def transparent_bg():
+    d = {
+        'config': {
+            'background':'none',
+            'view': {
+                'height': 300,
+                'width': 300,
+            }
+        }
+    }
+    return d
+
+alt.themes.register('transparent_bg', transparent_bg)
+alt.themes.enable('transparent_bg')
+
 
 # Read data
 df = pd.read_csv('../data/processed/spotify_songs_processed.csv', index_col=0)
@@ -100,7 +116,8 @@ def feature_description_card():
 
 
 # Define the layout of the Dash app
-app.layout = dbc.Container(
+app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'}, children=[
+    dbc.Container(
     dcc.Tabs([
         dcc.Tab(label='Summary', children=[
             dbc.Row([
@@ -495,7 +512,7 @@ app.layout = dbc.Container(
                             placeholder='Enter seconds...',
                             min=0,
                             max=59,
-                            style={'border': '2px solid lightgrey', 'border-radius': '10px'})
+                            style={'border': '2px solid #8AD596', 'border-radius': '10px'})
                     ])
                 ]),
                 dbc.Col([html.Label('seconds')], style={'margin-left': '-10px'})
@@ -523,6 +540,7 @@ app.layout = dbc.Container(
     ]),
     fluid=True
 )
+])
 
 def create_feature_distribution_charts(df, selected_features):
     charts = []

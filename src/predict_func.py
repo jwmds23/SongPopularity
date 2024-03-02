@@ -36,9 +36,9 @@ def track_radar(danceability, energy, key, loudness, mode, speechiness, acoustic
             theta=categories,
             fill='toself',
             name='Track Features',
-            line=dict(color='green'),
-            marker=dict(color='green'),
-            textfont=dict(color='darkgreen')
+            line=dict(color='#0AF52F'),
+            marker=dict(color='#0AF52F'),
+            textfont=dict(color='#0AF52F')
         )
     ])
     
@@ -52,7 +52,7 @@ def track_radar(danceability, energy, key, loudness, mode, speechiness, acoustic
         showlegend=False,
         plot_bgcolor='rgba(0,0,0,0)',  # Set background color to transparent
         paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='green')
+        font=dict(color='#0AF52F')
     )
     
     return fig
