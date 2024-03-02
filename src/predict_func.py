@@ -35,7 +35,10 @@ def track_radar(danceability, energy, key, loudness, mode, speechiness, acoustic
             r=values,
             theta=categories,
             fill='toself',
-            name='Track Features'
+            name='Track Features',
+            line=dict(color='#0AF52F'),
+            marker=dict(color='#0AF52F'),
+            textfont=dict(color='#0AF52F')
         )
     ])
     
@@ -48,7 +51,8 @@ def track_radar(danceability, energy, key, loudness, mode, speechiness, acoustic
         ),
         showlegend=False,
         plot_bgcolor='rgba(0,0,0,0)',  # Set background color to transparent
-        paper_bgcolor='rgba(0,0,0,0)'
+        paper_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='#0AF52F')
     )
     
     return fig
@@ -93,16 +97,18 @@ def pred_chart(result):
         theta=alt.Theta('result'),
         color=alt.condition(
             alt.datum.category==1,
-            alt.value('orange'),
+            alt.value('darkgreen'),
             alt.value('lightgrey')
         )
     )
 
     text_chart = alt.Chart(df_pred.iloc[0:1, ]).mark_text(size=60).encode(
         text = 'result',
-        color= alt.Color('result', scale=alt.Scale(scheme='lightorange'), legend=None)
+        color= alt.Color('result', scale=alt.Scale(scheme='greens'), legend=None)
     )
 
     pred = circle_chart+text_chart
+    
+    pred.configure_view(strokeWidth=0)
 
     return pred.to_html()
