@@ -112,3 +112,66 @@ def pred_chart(result):
     pred.configure_view(strokeWidth=0)
 
     return pred.to_html()
+
+# handle select all options for feature tab
+def handle_select_all(selected_values, options_list):
+    if 'all' in selected_values:
+        # Exclude 'Select All' option itself
+        return [option['value'] for option in options_list if option['value'] != 'all']
+    return selected_values
+
+# plot function for feature tab
+def create_feature_distribution_charts(df, selected_features):
+    charts = []
+    
+    # Define a single selection that binds to the legend and allows toggling
+    selection = alt.selection_point(fields=['nominal_popularity'], bind='legend')
+
+    popularity_colors = {
+        'high': '#69A053',  
+        'medium':  '#E8CC52',  
+        'low': '#5777A5', 
+    }
+
+    # Determine the layout based on the number of selected features
+    layout_columns = 3 if len(selected_features) > 1 else 1
+    
+    for feature in selected_features:
+        # Check if the feature is 'key' or 'mode' for categorical encoding, else treat as numerical
+        if feature in ['key', 'mode']:  # Categorical features
+            chart = alt.Chart(df).mark_bar(tooltip=True).encode(
+                alt.X(f"{feature}:N", sort='-y', title=feature.capitalize(),axis=alt.Axis(labelColor='white', titleColor='white')),
+                alt.Y('count()',axis=alt.Axis(labelColor='white', titleColor='white')),
+                alt.Color('nominal_popularity:N', legend=alt.Legend(title="Select Popularity Level", symbolSize= 200, labelColor='white'), scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),
+                tooltip=[alt.Tooltip(f"{feature}:N"), alt.Tooltip('count()', title='Count')]
+            ).add_params(
+                selection
+            ).transform_filter(
+                selection
+            )
+        else:  # Numerical features
+            chart = alt.Chart(df).mark_bar().encode(
+                alt.X(f"{feature}:Q", bin=True, title=feature.capitalize().replace(' (binned)', ''),axis=alt.Axis(labelColor='white', titleColor='white')),
+                alt.Y('count()', title=None,axis=alt.Axis(labelColor='white', titleColor='white')),
+                alt.Color('nominal_popularity:N', legend=alt.Legend(title="Select Popularity Level", symbolSize= 200,labelColor='white'), scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),
+                tooltip=[alt.Tooltip(f"{feature}:Q", bin=True), alt.Tooltip('count()', title='Count')]
+            ).add_params(
+                selection
+            ).transform_filter(
+                selection
+            )
+        
+        charts.append(chart)
+    
+    # Combine all charts into a single chart, adjusting the layout based on the number of charts
+    if len(charts) > 1:
+        combined_chart = alt.hconcat(*[alt.vconcat(*charts[i::layout_columns]).resolve_scale(y='independent') for i in range(layout_columns)])
+    else:
+        combined_chart = charts[0]  # If only one chart, just use it directly
+    
+    # Apply global configurations
+    combined_chart = combined_chart.configure_view(
+        strokeWidth=0
+    )
+    
+    return combined_chart.to_html()

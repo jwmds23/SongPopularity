@@ -11279,3 +11279,6 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
+custom-dropdown.Select-value {
+    color: #16E536; /* This sets the selected value's text color */
+}
