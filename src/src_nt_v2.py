@@ -89,11 +89,7 @@ def summary_description_card():
     return html.Div(
         id="description-card-1",
         children=[
-            html.H3("Spotify Song Popularity Summary"),
-            html.Div(
-                id="intro-1",
-                children="In this section, users can find visual representations of the average popularity trending, the general distribution of all songs' popularity, as well as breakdowns by different genres and rankings of songs and artists.",
-            ),
+            html.H3("Filter Menu"),
             html.Br(),    
             ],
     )
@@ -105,11 +101,7 @@ def feature_description_card():
     return html.Div(
         id="description-card-2",
         children=[
-            html.H3("Spotify Song Popularity by Feature"),
-            html.Div(
-                id="intro-2",
-                children="In this section, users can explore how song popularity is distributed across the technical features of the songs, including danceability, duration, key, modality, and more. Users can select and customize filters via a dropdown menu for their own purposes.",
-            ),
+            html.H3("Filter Menu"),
             html.Br(),    
             ],
     )
@@ -162,19 +154,19 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                 dbc.Col([
                     # The first plot column 
                     html.Div(
-                        id="decade-trend-line-chart",
+                        id="popularity-level-distribution-chart",
                         children=[
-                            html.H6("Decade Trend Line Chart"),
+                            html.H4("Popularity and Genre Distribution"),
                             html.Iframe(
-                                id="decade-trend-line-chart-iframe",
+                                id="popularity-level-distribution-chart-iframe",
                                 style={'border-width': '0', 'width': '100%', 'height': '400px'},
                             ),
                         ],
-                        ),
+                    ),
                     html.Div(
                         id="top-10-popularity-songs-artists-chart",
                         children=[
-                            html.H6("Top 10 Popularity Songs & Artists"),
+                            html.H4("Top 10 Popularity Songs & Artists"),
                             html.Iframe(
                                 id="top-10-popularity-songs-artists-chart-iframe",
                                 style={'border-width': '0', 'width': '100%', 'height': '1000px'},
@@ -185,19 +177,19 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                 dbc.Col([
                     # The second plot column
                     html.Div(
-                        id="popularity-level-distribution-chart",
+                        id="decade-trend-line-chart",
                         children=[
-                            html.H6("Popularity and Genre Distribution"),
+                            html.H4("Decade Trend Line Chart"),
                             html.Iframe(
-                                id="popularity-level-distribution-chart-iframe",
-                                style={'border-width': '0', 'width': '100%', 'height': '400px'},
+                                id="decade-trend-line-chart-iframe",
+                                style={'border-width': '0', 'width': '100%', 'height': '300px'},
                             ),
                         ],
-                    ),
+                        ),
                     html.Div(
                         id="feature_scatter-chart",
                         children=[
-                            html.H6("Two-Feature Scatter Plot"),
+                            html.H4("Two-Feature Scatter Plot"),
                             "Release Year",
                             dcc.Slider(id='year-slider', 
                                        min=1957, max=2021, 
@@ -205,22 +197,26 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                        marks={1960: '1960', 1970: '1970', 1980: '1980', 1990: '1990', 2000: '2000', 2010: '2010'},
                                        updatemode='drag',
                                        step=1),
-                            "Feature 1",
-                            dcc.Dropdown(
-                                    id='feature1-dropdown',
-                                    options=[{'label': feature, 'value': feature} for feature in feature_list],
-                                    value='danceability',
-                                    multi=False,
-                                    style={'width': '200px'} 
-                                ),
-                            "Feature 2",
-                            dcc.Dropdown(
-                                    id='feature2-dropdown',
-                                    options=[{'label': feature, 'value': feature} for feature in feature_list],
-                                    value='liveness',
-                                    multi=False,
-                                    style={'width': '200px'}
-                                ),
+                            dbc.Row([
+                                dbc.Col([
+                                    "Feature 1",
+                                    dcc.Dropdown(
+                                            id='feature1-dropdown',
+                                            options=[{'label': feature, 'value': feature} for feature in feature_list],
+                                            value='danceability',
+                                            multi=False,
+                                            style={'width': '200px'} 
+                                        ),]),
+                                dbc.Col([
+                                    "Feature 2",
+                                    dcc.Dropdown(
+                                            id='feature2-dropdown',
+                                            options=[{'label': feature, 'value': feature} for feature in feature_list],
+                                            value='liveness',
+                                            multi=False,
+                                            style={'width': '200px'}
+                                        ),]),
+                            ]),
                             html.Iframe(
                                 id="feature_scatter-chart-iframe",
                                 style={'border-width': '0', 'width': '100%', 'height': '800px'},
@@ -673,7 +669,7 @@ def update_decade_trend_line(n_clicks, start_date, end_date, selected_genres, se
     chart=alt.Chart(filtered_df).mark_line(color='darkgreen',opacity=0.5).encode(
         x=alt.X('decade',type='ordinal',title=None),
         y=alt.Y('mean(track_popularity)',scale=alt.Scale(zero=False),title='Average Popularity'),
-    ).properties(width=300)
+    ).properties(height=200, width=400)
     return chart.to_html()
 
 
