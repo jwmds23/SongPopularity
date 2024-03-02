@@ -120,7 +120,7 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                             dcc.DatePickerRange(
                                     id='date-picker-range-1',
                                     start_date_placeholder_text='Start Date',
-                                    end_date_placeholder_text='End Date',
+                                    end_date_placeholder_text='End Date'
                                 ),
                             html.Br(),
                             html.Br(),
@@ -129,7 +129,8 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                     id='genre-dropdown-1',
                                     options=[{'label': 'Select All', 'value': 'all'}] + [{'label': genre, 'value': genre} for genre in genre_list],
                                     value=['all'],
-                                    multi=True
+                                    multi=True,
+                                    style={'backgroundColor': 'black', 'color': 'darkgreen'}
                                 ),
                             html.Br(),
                             html.P("SubGenre"),
@@ -137,7 +138,8 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                     id='subgenre-dropdown-1',
                                     options=[{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list],
                                     value=['all'],
-                                    multi=True
+                                    multi=True,
+                                    style={'backgroundColor': 'black', 'color': 'darkgreen'}
                                 ),
                             html.Br(),
                             html.P("Artist"),
@@ -145,10 +147,14 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                     id='artist-dropdown-1',
                                     options=[{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list],
                                     value=['all'],
-                                    multi=True
+                                    multi=True,
+                                    style={'backgroundColor': 'black', 'color': 'darkgreen'}
                                 ),
                             html.Br(),
-                            html.Button('Apply', id='apply-button-1', n_clicks=0),
+                            html.Button('Apply', id='apply-button-1', n_clicks=0,
+                                        style={'backgroundColor': 'black',  
+                                                'color': '#16E536', 
+                                        }),
                             ])],width="4"
                         ),
                 dbc.Col([
@@ -182,7 +188,7 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                             html.H4("Decade Trend Line Chart"),
                             html.Iframe(
                                 id="decade-trend-line-chart-iframe",
-                                style={'border-width': '0', 'width': '100%', 'height': '300px'},
+                                style={'border-width': '0', 'width': '100%', 'height': '400px'},
                             ),
                         ],
                         ),
@@ -205,7 +211,7 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                             options=[{'label': feature, 'value': feature} for feature in feature_list],
                                             value='danceability',
                                             multi=False,
-                                            style={'width': '200px'} 
+                                            style={'width': '200px','backgroundColor': 'black', 'color': '#16E536'} 
                                         ),]),
                                 dbc.Col([
                                     "Feature 2",
@@ -214,7 +220,7 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                             options=[{'label': feature, 'value': feature} for feature in feature_list],
                                             value='liveness',
                                             multi=False,
-                                            style={'width': '200px'}
+                                            style={'width': '200px','backgroundColor': 'black', 'color': '#16E536'}
                                         ),]),
                             ]),
                             html.Iframe(
@@ -244,7 +250,8 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                 id='genre-dropdown-2',
                                 options=[{'label': 'Select All', 'value': 'all'}] + [{'label': genre, 'value': genre} for genre in genre_list],
                                 value=['all'],  # Default value
-                                multi=True
+                                multi=True,
+                                style={'backgroundColor': 'black', 'color': '#16E536'}
                             ),
                             html.Br(),
                             html.P("SubGenre"),
@@ -252,7 +259,8 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                 id='subgenre-dropdown-2',
                                 options=[{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list],
                                 value=['all'],  # Default value
-                                multi=True
+                                multi=True,
+                                style={'backgroundColor': 'black', 'color': '#16E536'}
                             ),
                             html.Br(),
                             html.P("Artist"),
@@ -260,7 +268,8 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                 id='artist-dropdown-2',
                                 options=[{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list],
                                 value=['all'],  # Default value
-                                multi=True
+                                multi=True,
+                                style={'backgroundColor': 'black', 'color': '#16E536'}
                             ),
                             html.Br(),
                             html.P("Feature"),
@@ -268,10 +277,14 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                 id='feature-dropdown',
                                 options=[{'label': 'Select All', 'value': 'all'}] + [{'label': feature, 'value': feature} for feature in feature_list],
                                 value=['all'],  # Default value
-                                multi=True
+                                multi=True,
+                                style={'backgroundColor': 'black', 'color': '#16E536'}
                             ),
                             html.Br(),
-                            html.Button('Apply', id='apply-button-2', n_clicks=0),
+                            html.Button('Apply', id='apply-button-2', n_clicks=0,
+                                        style={'backgroundColor': 'black',  
+                                                'color': '#16E536', 
+                                        }),
                         ]),width="4",
                 ),
                 dbc.Col(
@@ -557,8 +570,8 @@ def create_feature_distribution_charts(df, selected_features):
         # Check if the feature is 'key' or 'mode' for categorical encoding, else treat as numerical
         if feature in ['key', 'mode']:  # Categorical features
             chart = alt.Chart(df).mark_bar(tooltip=True).encode(
-                alt.X(f"{feature}:N", sort='-y', title=feature.capitalize()),
-                alt.Y('count()'),
+                alt.X(f"{feature}:N", sort='-y', title=feature.capitalize(),axis=alt.Axis(labelColor='white', titleColor='white')),
+                alt.Y('count()',axis=alt.Axis(labelColor='white', titleColor='white')),
                 alt.Color('nominal_popularity:N', legend=alt.Legend(title="Select Popularity Level", symbolSize= 200), scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),
                 tooltip=[alt.Tooltip(f"{feature}:N"), alt.Tooltip('count()', title='Count')]
             ).add_params(
@@ -568,8 +581,8 @@ def create_feature_distribution_charts(df, selected_features):
             )
         else:  # Numerical features
             chart = alt.Chart(df).mark_bar().encode(
-                alt.X(f"{feature}:Q", bin=True, title=feature.capitalize().replace(' (binned)', '')),
-                alt.Y('count()', title=None),
+                alt.X(f"{feature}:Q", bin=True, title=feature.capitalize().replace(' (binned)', ''),axis=alt.Axis(labelColor='white', titleColor='white')),
+                alt.Y('count()', title=None,axis=alt.Axis(labelColor='white', titleColor='white')),
                 alt.Color('nominal_popularity:N', legend=alt.Legend(title="Select Popularity Level", symbolSize= 200), scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),
                 tooltip=[alt.Tooltip(f"{feature}:Q", bin=True), alt.Tooltip('count()', title='Count')]
             ).add_params(
@@ -666,10 +679,12 @@ def update_output(n_clicks, start_date, end_date, selected_genres, selected_subg
 )
 def update_decade_trend_line(n_clicks, start_date, end_date, selected_genres, selected_subgenres, selected_artists):
     filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
-    chart=alt.Chart(filtered_df).mark_line(color='darkgreen',opacity=0.5).encode(
-        x=alt.X('decade',type='ordinal',title=None),
-        y=alt.Y('mean(track_popularity)',scale=alt.Scale(zero=False),title='Average Popularity'),
-    ).properties(height=200, width=400)
+    chart=alt.Chart(filtered_df).mark_line(color='darkgreen',strokeWidth=5).encode(
+        x=alt.X('decade',type='ordinal',title=None
+                ,axis=alt.Axis(labelColor='white', titleColor='white')),
+        y=alt.Y('mean(track_popularity)',scale=alt.Scale(zero=False),title='Average Popularity',
+                axis=alt.Axis(labelColor='white', titleColor='white')),
+    ).properties(height=300, width=400)
     return chart.to_html()
 
 
@@ -687,12 +702,14 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
     sel1 = alt.selection_point(fields = ['playlist_genre'])
     sel2 = alt.selection_point(fields = ['nominal_popularity'])
     chart1=alt.Chart(filtered_df).mark_bar(color='darkred',opacity=0.7).encode(
-        x=alt.X('nominal_popularity',type='ordinal',title=None,sort=['low','medium','high']),
-        y=alt.Y('count()',title='Count of Records'),
-        color= alt.Color('nominal_popularity', legend=None)
-    ).properties(height=300,width=100).transform_filter(sel1).add_params(sel2)
+        x=alt.X('nominal_popularity',type='ordinal',title=None,
+                sort=['low','medium','high'],
+                axis=alt.Axis(labelColor='white', titleColor='white')),
+        y=alt.Y('count()',title='Count of Records',
+                axis=alt.Axis(labelColor='white', titleColor='white')),
+        color= alt.Color('nominal_popularity', legend=None)).properties(height=300,width=100).transform_filter(sel1).add_params(sel2)
     chart2=alt.Chart(filtered_df).mark_arc().encode(
-            color=alt.Color('playlist_genre',legend=alt.Legend(title=None)),
+            color=alt.Color('playlist_genre',legend=alt.Legend(title=None,labelColor='white')),
             theta='count()'
         ).properties(height=300,width=150).add_params(sel1).transform_filter(sel2)
     return (alt.hconcat(chart1, chart2).resolve_scale(color='independent')).to_html()
@@ -716,13 +733,17 @@ def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,select
     popularity_by_artists = df_new[['track_artist','track_popularity']].groupby('track_artist').mean('track_popularity').reset_index()
     top10_artists=popularity_by_artists.nlargest(10,"track_popularity")
     popularity_min=top10_artists['track_popularity'].min()-5
-    chart1 = alt.Chart(top10_songs).mark_bar(clip=True,color='darkgreen',opacity=0.4).encode(
-        x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Popularity'),
-        y=alt.Y("track_name", sort='-x',title=None) # sort the x value in descent order
+    chart1 = alt.Chart(top10_songs).mark_bar(clip=True,color='darkgreen',opacity=0.8).encode(
+        x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Popularity',
+                axis=alt.Axis(labelColor='white', titleColor='white')),
+        y=alt.Y("track_name", sort='-x',title=None,
+                axis=alt.Axis(labelColor='white', titleColor='white')) # sort the x value in descent order
     ).properties(title='Top 10 Songs')
-    chart2 = alt.Chart(top10_artists).mark_bar(clip=True,color='darkgreen',opacity=0.8).encode(
-        x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Average Popularity'),
-        y=alt.Y("track_artist", sort='-x',title=None) # sort the x value in descent order
+    chart2 = alt.Chart(top10_artists).mark_bar(clip=True,color='darkgreen').encode(
+        x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Average Popularity',
+                axis=alt.Axis(labelColor='white', titleColor='white')),
+        y=alt.Y("track_artist", sort='-x',title=None,
+                axis=alt.Axis(labelColor='white', titleColor='white')) # sort the x value in descent order
     ).properties(title='Top 10 Artists')
     return (chart1&chart2).to_html()
 
@@ -745,8 +766,8 @@ def update_feature_scatter(n_clicks, select_year, f1, f2, start_date, end_date, 
     brush = alt.selection_interval()
     sel = alt.selection_point(fields=['playlist_genre'])
     graph = alt.Chart(df_new).mark_circle().encode(
-        x = f1,
-        y = f2,
+        x = alt.X(f1,axis=alt.Axis(labelColor='white', titleColor='white')),
+        y = alt.Y(f2,axis=alt.Axis(labelColor='white', titleColor='white')),
         color = alt.condition(
             brush,
             'nominal_popularity',
@@ -756,8 +777,8 @@ def update_feature_scatter(n_clicks, select_year, f1, f2, start_date, end_date, 
     ).properties(height=300).add_params(brush).transform_filter(sel)
 
     graph1 = alt.Chart(df_new).mark_bar().encode(
-    x = alt.X('count()'),
-    y = alt.Y('playlist_genre', title=None),
+    x = alt.X('count()',axis=alt.Axis(labelColor='white', titleColor='white')),
+    y = alt.Y('playlist_genre', title=None,axis=alt.Axis(labelColor='white', titleColor='white')),
     color = alt.Color('playlist_genre',legend=None),
     ).properties(height=100).add_params(
         sel
