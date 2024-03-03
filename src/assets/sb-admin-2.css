@@ -267,6 +267,157 @@ select {
   word-wrap: normal;
 }
 
+.Select-menu-outer {
+  background-color: black !important;
+}
+.Select-value {
+  background-color: rgb(26, 24, 24) !important;
+  color: rgb(4, 184, 4) !important;
+}
+.Select-option {
+  background-color: rgb(26, 24, 24) !important;
+  color: rgb(4, 184, 4) !important;
+}
+.Select-option.is-focused {
+  background-color: #333 !important; /* Slightly lighter for focus */
+}
+.Select-multi-value-wrapper {
+  background-color: rgb(26, 24, 24) !important;
+  color: rgb(4, 184, 4) !important;
+}
+
+/* CSS to customize the background color of the input areas */
+.DateInput_input {
+  background-color: rgb(26, 24, 24) !important;
+  color: rgb(4, 184, 4) !important;
+}
+
+/* CSS to customize the background color of the date selection area (calendar) */
+.CalendarDay__default {
+  background-color: rgb(26, 24, 24) !important;
+  color: rgb(4, 184, 4) !important;
+}
+
+.CalendarDay__selected_span, .CalendarDay__selected, .CalendarDay__hovered_span:hover, .CalendarDay__hovered_span {
+  background-color: rgb(26, 24, 24) !important;
+  color: rgb(4, 184, 4) !important;
+}
+
+/* Additional customization for the calendar to ensure visibility and aesthetics */
+.CalendarMonth_caption, .CalendarMonth {
+  background-color: rgb(26, 24, 24) !important;
+  color:  rgb(4, 184, 4) !important;
+  border: none;
+}
+
+.DateRangePicker_picker {
+  background-color: rgb(26, 24, 24) !important;
+  color: rgb(4, 184, 4) !important;
+  border: none;
+}
+
+.DateRangePicker {
+  background-color: rgb(26, 24, 24) !important;
+  color: rgb(4, 184, 4) !important;
+  border: none;
+}
+
+.DateRangePicker_calendarWrapper {
+  background-color: rgb(26, 24, 24) !important;
+  border: none;
+}
+
+/* Customizing the border/frame of the date range picker inputs */
+.DateInput, .DateRangePickerInput, .DateRangePickerInput__withBorder {
+  border-color: rgb(26, 24, 24) !important; /* Change border color */
+  background-color: rgb(26, 24, 24) !important; /* Change background if needed */
+}
+
+/* Customizing the arrow */
+.DateRangePickerInput_arrow {
+  color: rgb(4, 184, 4) !important; /* This changes the color of the arrow svg */
+}
+
+/* If the arrow does not change, it might be an SVG inside a button or div, requiring more specific targeting */
+.DateRangePickerInput_arrow svg {
+  fill:  rgb(4, 184, 4) !important; /* Change SVG fill color */
+}
+
+/* Customize selected date and range highlight */
+.CalendarDay__selected, .CalendarDay__selected:active, .CalendarDay__selected:hover, .CalendarDay {
+  background-color: rgb(26, 24, 24) !important; /* Darker shade for selected dates */
+  border-color: rgb(26, 24, 24) !important; /* Optionally set border color */
+}
+
+.CalendarDay__selected_span { /* Style for the range between selected dates */
+  background-color: rgb(26, 24, 24) !important; /* Lighter shade for range */
+  color: rgb(4, 184, 4) !important;
+  border: none;
+}
+
+/* Customize the hover effect */
+.CalendarDay__hovered_span, .CalendarDay__hovered_span:hover {
+  background-color: rgb(26, 24, 24) !important;
+  color: rgb(4, 184, 4) !important;
+}
+
+/* Customize the day hovering */
+.CalendarDay:hover {
+  background-color: rgb(26, 24, 24) !important;
+  color: rgb(4, 184, 4) !important;
+}
+
+.DayPickerNavigation_button { /* Navigation buttons */
+  background-color: rgb(26, 24, 24)!important;
+  color: rgb(4, 184, 4) !important;
+}
+
+/* If the calendar contains SVG elements for navigation arrows */
+.DayPickerNavigation_button svg {
+  background-color: rgb(26, 24, 24)!important;
+  fill: rgb(4, 184, 4) !important; /* Change SVG fill color for arrows */
+}
+
+/* To ensure the input fields match */
+.DateInput_input {
+  background-color: rgb(26, 24, 24)!important;
+  color: rgb(4, 184, 4) !important;
+}
+
+/* Update for the focusing border color around the input field */
+.DateInput_input:focus, .DateRangePickerInput__withBorder:focus {
+  border-color: rgb(26, 24, 24) !important;
+}
+
+.CalendarDay__blocked_out_of_range, 
+.CalendarDay__blocked_calendar,
+.CalendarDay__blocked_minimum_nights {
+    background-color: rgb(26, 24, 24) !important;
+    border: none;
+}
+
+.DayPicker_weekHeader {
+  background-color: rgb(26, 24, 24) !important;
+  border: none;
+}
+
+.DateRangePicker,
+.DateRangePicker_1,
+.DateRangePicker__container {
+    background-color: rgb(26, 24, 24) !important; /* Set background color to black */
+}
+
+/* If the white frame is caused by borders, remove them */
+.DateRangePicker_picker,
+.DayPicker,
+.DayPicker__withBorder,
+.CalendarMonthGrid {
+    border-radius: 10px !important;
+    background-color: rgb(26, 24, 24) !important;
+}
+
+/* To specifically target any remaining elements, additional inspection might be required */
+
 button,
 [type="button"],
 [type="reset"],

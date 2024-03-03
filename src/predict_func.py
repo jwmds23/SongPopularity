@@ -97,8 +97,8 @@ def pred_chart(result):
         theta=alt.Theta('result'),
         color=alt.condition(
             alt.datum.category==1,
-            alt.value('darkgreen'),
-            alt.value('lightgrey')
+            alt.value('green'),
+            alt.value('grey')
         )
     )
 
