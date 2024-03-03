@@ -12,8 +12,7 @@ from dash import dcc, html, Input, Output,State
 import dash_bootstrap_components as dbc
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
-import predict_func
-from predict_func import handle_select_all, create_feature_distribution_charts
+from predict_func import handle_select_all, create_feature_distribution_charts, pred_chart, track_radar, pop_predict
 alt.data_transformers.disable_max_rows()
 # alt.data_transformers.enable("vegafusion")
 
@@ -831,11 +830,11 @@ def update_output(value):
 def update_output(n_clicks, genre, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, minutes, seconds):
     if n_clicks > 0:
         duration_ms = minutes * 60000 + seconds * 1000   # transfer the time to miliseconds
-        result = predict_func.pred_chart(round(predict_func.pop_predict(genre, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, duration_ms), 0))
-        radar = predict_func.track_radar(danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, duration_ms)
+        result = pred_chart(round(pop_predict(genre, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, duration_ms), 0))
+        radar = track_radar(danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, duration_ms)
         return result, radar
     else:
-        return predict_func.pred_chart(0), predict_func.track_radar(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        return pred_chart(0), track_radar(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
 if __name__ == "__main__":
     app.run_server(debug=True)
