@@ -17,6 +17,12 @@ from joblib import load
 alt.data_transformers.disable_max_rows()
 # alt.data_transformers.enable("vegafusion")
 
+# Construct the absolute path for the CSV file
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+data_path = os.path.join(BASE_DIR, '..', 'data', 'processed', 'spotify_songs_processed.csv')
+
+# Load the CSV file
+
 app = dash.Dash(
     __name__,
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
@@ -46,7 +52,8 @@ alt.themes.enable('transparent_bg')
 
 
 # Read data
-df = pd.read_csv('../data/processed/spotify_songs_processed.csv', index_col=0)
+#df = pd.read_csv('../data/processed/spotify_songs_processed.csv', index_col=0)
+df = pd.read_csv(data_path, index_col=0)
 df.dropna(inplace=True)
 object_columns = df.select_dtypes(include=['object']).columns
 for column in object_columns:
