@@ -1,3 +1,8 @@
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 import pandas as pd
 import numpy as np
 import altair as alt
@@ -7,15 +12,15 @@ from sklearn.ensemble import RandomForestRegressor
 from joblib import load
 
 # load the prediction model and feature scalar
-model = load('./support_model/spotify_model.joblib')
-key_scalar = load('./support_model/key_scalar.joblib')
-loud_scalar = load('./support_model/loud_scalar.joblib')
-dur_scalar = load('./support_model/duration_scalar.joblib')
-tempo_scalar = load('./support_model/tempo_scalar.joblib')
-key_scalar_mm = load('./support_model/key_scalar_mm.joblib')
-loud_scalar_mm = load('./support_model/loud_scalar_mm.joblib')
-dur_scalar_mm = load('./support_model/duration_scalar_mm.joblib')
-tempo_scalar_mm = load('./support_model/tempo_scalar_mm.joblib')
+model = load('src/support_model/spotify_model.joblib')
+key_scalar = load('src/support_model/key_scalar.joblib')
+loud_scalar = load('src/support_model/loud_scalar.joblib')
+dur_scalar = load('src/support_model/duration_scalar.joblib')
+tempo_scalar = load('src/support_model/tempo_scalar.joblib')
+key_scalar_mm = load('src/support_model/key_scalar_mm.joblib')
+loud_scalar_mm = load('src/support_model/loud_scalar_mm.joblib')
+dur_scalar_mm = load('src/support_model/duration_scalar_mm.joblib')
+tempo_scalar_mm = load('src/support_model/tempo_scalar_mm.joblib')
 
 def track_radar(danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, duration, key_scalar_mm=key_scalar_mm, loud_scalar_mm=loud_scalar_mm, dur_scalar_mm=dur_scalar_mm, tempo_scalar_mm=tempo_scalar_mm):
     categories = ['Danceability', 'Energy', 'Key', 'Loudness', 'Mode', 'Speechiness', 'Acousticness', 'Instrumentalness', 'Liveness', 'Valence', 'Tempo', 'Duration']
