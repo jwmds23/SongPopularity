@@ -16,7 +16,7 @@ from dash import dcc, html, Input, Output,State
 import dash_bootstrap_components as dbc
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from predict_func import handle_select_all, create_feature_distribution_charts, pred_chart, track_radar, pop_predict
+from .predict_func import handle_select_all, create_feature_distribution_charts, pred_chart, track_radar, pop_predict
 alt.data_transformers.disable_max_rows()
 # alt.data_transformers.enable("vegafusion")
 
