@@ -197,12 +197,19 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                         children=[
                             html.H4("Two-Feature Scatter Plot"),
                             "Release Year",
-                            dcc.Slider(id='year-slider', 
+                            dbc.Row([
+                                dbc.Col([
+                                    dcc.Slider(id='year-slider', 
                                        min=1957, max=2021, 
                                        value=2000,
                                        marks={1960: '1960', 1970: '1970', 1980: '1980', 1990: '1990', 2000: '2000', 2010: '2010'},
                                        updatemode='drag',
                                        step=1),
+                                    ], width=9),
+                                dbc.Col([
+                                    html.Div(id='year-output')],
+                                    style={'margin-left': '-30px', 'margin-top': '-5px'},
+                                    width=1)]),
                             dbc.Row([
                                 dbc.Col([
                                     "Feature 1",
@@ -211,7 +218,7 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                             options=[{'label': feature, 'value': feature} for feature in feature_list],
                                             value='danceability',
                                             multi=False,
-                                            style={'width': '200px','backgroundColor': 'black', 'color': '#16E536'} 
+                                            style={'width': '200px','backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'} 
                                         ),]),
                                 dbc.Col([
                                     "Feature 2",
@@ -220,7 +227,7 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                             options=[{'label': feature, 'value': feature} for feature in feature_list],
                                             value='liveness',
                                             multi=False,
-                                            style={'width': '200px','backgroundColor': 'black', 'color': '#16E536'}
+                                            style={'width': '200px','backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
                                         ),]),
                             ]),
                             html.Iframe(
@@ -715,7 +722,8 @@ def update_feature_scatter(n_clicks, select_year, f1, f2, start_date, end_date, 
             brush,
             'nominal_popularity',
             alt.value('grey'),
-            title='Popularity'),
+            title='Popularity',
+            legend=alt.Legend(title=None,labelColor='white')),
         tooltip = ['track_name', 'track_artist', 'track_album_name', 'track_popularity']
     ).properties(height=300).add_params(brush).transform_filter(sel)
 
@@ -729,6 +737,13 @@ def update_feature_scatter(n_clicks, select_year, f1, f2, start_date, end_date, 
         brush
     )
     return (alt.vconcat(graph, graph1).resolve_scale(color='independent')).to_html()
+
+@app.callback(
+    Output('year-output', 'children'),
+    Input('year-slider', 'value') 
+)
+def update_output(value):
+    return value
 
 @app.callback(
     Output('danceability-output', 'children'),
