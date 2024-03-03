@@ -986,7 +986,7 @@ def create_feature_distribution_charts(df, selected_features):
     }
 
     # Determine the layout based on the number of selected features
-    layout_columns = 3 if len(selected_features) > 1 else 1
+    layout_columns = 2 if len(selected_features) > 1 else 1
     
     for feature in selected_features:
         # Check if the feature is 'key' or 'mode' for categorical encoding, else treat as numerical
@@ -1024,8 +1024,9 @@ def create_feature_distribution_charts(df, selected_features):
     # Apply global configurations
     combined_chart = combined_chart.configure_view(
         strokeWidth=0
+    ).configure_legend(
+    orient='top-left'
     )
-    
     return combined_chart.to_html()
 
 
