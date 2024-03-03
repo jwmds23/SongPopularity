@@ -6,7 +6,7 @@ brotlipy==0.7.0
 canvasapi==2.2.0
 canvasutils==0.4.1
 cfgv==3.4.0
-clyent==1.2.2
+clyent==1.2.1
 comm==0.2.1
 conda-repo-cli==1.0.75
 conda-verify==3.4.2
