@@ -1024,9 +1024,8 @@ def create_feature_distribution_charts(df, selected_features):
     # Apply global configurations
     combined_chart = combined_chart.configure_view(
         strokeWidth=0
-    ).configure_legend(
-    orient='top-left'
     )
+    
     return combined_chart.to_html()
 
 
