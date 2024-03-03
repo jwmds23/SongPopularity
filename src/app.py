@@ -1,5 +1,6 @@
 # python
 import os
+import sys
 import json
 import pandas as pd
 import numpy as np
@@ -15,6 +16,8 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from predict_func import handle_select_all, create_feature_distribution_charts, pred_chart, track_radar, pop_predict
 alt.data_transformers.disable_max_rows()
 # alt.data_transformers.enable("vegafusion")
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 app = dash.Dash(
     __name__,
