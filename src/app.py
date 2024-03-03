@@ -848,15 +848,26 @@ def update_output(n_clicks, genre, danceability, energy, key, loudness, mode, sp
 
 
 # load the prediction model and feature scalar
-model = load('./support_model/spotify_model.joblib')
-key_scalar = load('./support_model/key_scalar.joblib')
-loud_scalar = load('./support_model/loud_scalar.joblib')
-dur_scalar = load('./support_model/duration_scalar.joblib')
-tempo_scalar = load('./support_model/tempo_scalar.joblib')
-key_scalar_mm = load('./support_model/key_scalar_mm.joblib')
-loud_scalar_mm = load('./support_model/loud_scalar_mm.joblib')
-dur_scalar_mm = load('./support_model/duration_scalar_mm.joblib')
-tempo_scalar_mm = load('./support_model/tempo_scalar_mm.joblib')
+model_path = os.path.join(BASE_DIR, 'support_model', 'spotify_model.joblib')
+key_scalar_path = os.path.join(BASE_DIR, 'support_model', 'key_scalar.joblib')
+loud_scalar_path = os.path.join(BASE_DIR, 'support_model', 'loud_scalar.joblib')
+dur_scalar_path = os.path.join(BASE_DIR, 'support_model', 'duration_scalar.joblib')
+tempo_scalar_path = os.path.join(BASE_DIR, 'support_model', 'tempo_scalar.joblib')
+key_scalar_mm_path = os.path.join(BASE_DIR, 'support_model', 'key_scalar_mm.joblib')
+loud_scalar_mm_path = os.path.join(BASE_DIR, 'support_model', 'loud_scalar_mm.joblib')
+dur_scalar_mm_path = os.path.join(BASE_DIR, 'support_model', 'duration_scalar_mm.joblib')
+tempo_scalar_mm_path = os.path.join(BASE_DIR, 'support_model', 'tempo_scalar_mm.joblib')
+
+# Load the models
+model = load(model_path)
+key_scalar = load(key_scalar_path)
+loud_scalar = load(loud_scalar_path)
+dur_scalar = load(dur_scalar_path)
+tempo_scalar = load(tempo_scalar_path)
+key_scalar_mm = load(key_scalar_mm_path)
+loud_scalar_mm = load(loud_scalar_mm_path)
+dur_scalar_mm = load(dur_scalar_mm_path)
+tempo_scalar_mm = load(tempo_scalar_mm_path)
 
 def track_radar(danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, duration, key_scalar_mm=key_scalar_mm, loud_scalar_mm=loud_scalar_mm, dur_scalar_mm=dur_scalar_mm, tempo_scalar_mm=tempo_scalar_mm):
     categories = ['Danceability', 'Energy', 'Key', 'Loudness', 'Mode', 'Speechiness', 'Acousticness', 'Instrumentalness', 'Liveness', 'Valence', 'Tempo', 'Duration']
