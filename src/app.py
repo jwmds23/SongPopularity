@@ -749,6 +749,35 @@ def update_output(value):
     return value
 
 @app.callback(
+    Output('subgenre-dropdown-1', 'options'),
+    [Input('genre-dropdown-1', 'value')]
+)
+def update_subgenre_options(selected_genres):
+    if 'all' not in selected_genres:
+        available_subgenres = df[df['playlist_genre'].isin(selected_genres)]['playlist_subgenre'].unique()
+        options = [{'label': subgenre, 'value': subgenre} for subgenre in available_subgenres]
+        return options
+    else: 
+        options = [{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list]
+        return options
+    
+
+@app.callback(
+    Output('subgenre-dropdown-2', 'options'),
+    [Input('genre-dropdown-2', 'value')]
+)
+def update_subgenre_options(selected_genres):
+    if 'all' not in selected_genres:
+        available_subgenres = df[df['playlist_genre'].isin(selected_genres)]['playlist_subgenre'].unique()
+        options = [{'label': subgenre, 'value': subgenre} for subgenre in available_subgenres]
+        return options
+    else: 
+        options = [{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list]
+        return options
+    
+
+
+@app.callback(
     Output('danceability-output', 'children'),
     Input('danceability', 'value') 
 )
