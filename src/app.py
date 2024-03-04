@@ -654,7 +654,7 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
     filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
     sel1 = alt.selection_point(fields = ['playlist_genre'])
     sel2 = alt.selection_point(fields = ['nominal_popularity'])
-    chart1=alt.Chart(filtered_df).mark_bar(color='darkred',opacity=0.7).encode(
+    chart1=alt.Chart(filtered_df).mark_bar().encode(
         x=alt.X('nominal_popularity',type='ordinal',title=None,
                 sort=['low','medium','high'],
                 axis=alt.Axis(labelColor='white', titleColor='white')),
@@ -686,18 +686,20 @@ def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,select
     popularity_by_artists = df_new[['track_artist','track_popularity']].groupby('track_artist').mean('track_popularity').reset_index()
     top10_artists=popularity_by_artists.nlargest(10,"track_popularity")
     popularity_min=top10_artists['track_popularity'].min()-5
-    chart1 = alt.Chart(top10_songs).mark_bar(clip=True,color='darkgreen',opacity=0.8).encode(
+    chart1 = alt.Chart(top10_songs).mark_bar(clip=True,color='darkgreen').encode(
         x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Popularity',
                 axis=alt.Axis(labelColor='white', titleColor='white')),
         y=alt.Y("track_name", sort='-x',title=None,
                 axis=alt.Axis(labelColor='white', titleColor='white')) # sort the x value in descent order
-    ).properties(title='Top 10 Songs')
+    ).properties(title= alt.Title('Top 10 Songs',color='white'
+                                  ))
     chart2 = alt.Chart(top10_artists).mark_bar(clip=True,color='darkgreen').encode(
         x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Average Popularity',
                 axis=alt.Axis(labelColor='white', titleColor='white')),
         y=alt.Y("track_artist", sort='-x',title=None,
                 axis=alt.Axis(labelColor='white', titleColor='white')) # sort the x value in descent order
-    ).properties(title='Top 10 Artists')
+    ).properties(title= alt.Title('Top 10 Artists',color='white'
+                                  ))
     return (chart1&chart2).to_html()
 
 

@@ -139,7 +139,7 @@ def create_feature_distribution_charts(df, selected_features):
     }
 
     # Determine the layout based on the number of selected features
-    layout_columns = 2 if len(selected_features) > 1 else 1
+    layout_columns = 3 if len(selected_features) > 1 else 1
     
     for feature in selected_features:
         # Check if the feature is 'key' or 'mode' for categorical encoding, else treat as numerical
@@ -147,23 +147,29 @@ def create_feature_distribution_charts(df, selected_features):
             chart = alt.Chart(df).mark_bar(tooltip=True).encode(
                 alt.X(f"{feature}:N", sort='-y', title=feature.capitalize(),axis=alt.Axis(labelColor='white', titleColor='white')),
                 alt.Y('count()',axis=alt.Axis(labelColor='white', titleColor='white')),
-                alt.Color('nominal_popularity:N', legend=alt.Legend(title="Select Popularity Level", symbolSize= 200, labelColor='white'), scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),
+                alt.Color('nominal_popularity:N', legend=alt.Legend(title="Select Popularity Level",  titleColor='white', symbolSize= 500, labelColor='white'), scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),
                 tooltip=[alt.Tooltip(f"{feature}:N"), alt.Tooltip('count()', title='Count')]
             ).add_params(
                 selection
             ).transform_filter(
                 selection
+            ).properties(
+            width = 220,
+            height = 220
             )
         else:  # Numerical features
             chart = alt.Chart(df).mark_bar().encode(
                 alt.X(f"{feature}:Q", bin=True, title=feature.capitalize().replace(' (binned)', ''),axis=alt.Axis(labelColor='white', titleColor='white')),
                 alt.Y('count()', title=None,axis=alt.Axis(labelColor='white', titleColor='white')),
-                alt.Color('nominal_popularity:N', legend=alt.Legend(title="Select Popularity Level", symbolSize= 200,labelColor='white'), scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),
+                alt.Color('nominal_popularity:N', legend=alt.Legend(title="Select Popularity Level", titleColor='white', symbolSize= 500,labelColor='white'), scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),
                 tooltip=[alt.Tooltip(f"{feature}:Q", bin=True), alt.Tooltip('count()', title='Count')]
             ).add_params(
                 selection
             ).transform_filter(
                 selection
+            ).properties(
+            width = 220,
+            height = 220
             )
         
         charts.append(chart)
@@ -177,6 +183,15 @@ def create_feature_distribution_charts(df, selected_features):
     # Apply global configurations
     combined_chart = combined_chart.configure_view(
         strokeWidth=0
+    ).configure_legend(
+    direction='horizontal',
+    orient='none',  # This takes the legend out of the normal flow
+    titleAlign='right',
+    titleAnchor='end',
+    titleFontSize=15,
+    legendX=650,  # Manually adjust the X-coordinate position
+    legendY= -70,  # Manually adjust the Y-coordinate position to move it closer to the title
+    columns=3  # Assuming you want 3 items in one row, change as needed
     )
     
     return combined_chart.to_html()
