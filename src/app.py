@@ -24,7 +24,6 @@ app = dash.Dash(
     __name__,
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
     external_stylesheets=[dbc.themes.BOOTSTRAP]
-    #  external_stylesheets=["assets/sb-admin-2.css"]
 )
 app.title = "Spotify Song Popularity"
 
@@ -44,9 +43,20 @@ def transparent_bg():
     }
     return d
 
-alt.themes.register('transparent_bg', transparent_bg)
-alt.themes.enable('transparent_bg')
+def grey_bg():
+    d = {
+        'config': {
+            'background':'#888A87',
+            'view': {
+                'height': 300,
+                'width': 300,
+            }
+        }
+    }
+    return d
 
+alt.themes.register('transparent_bg', transparent_bg)
+alt.themes.register('grey_bg', grey_bg)
 
 # Read data
 df = pd.read_csv('data/processed/spotify_songs_processed.csv', index_col=0)
@@ -110,476 +120,496 @@ def feature_description_card():
             ],
     )
 
+tab1 =  html.Div(id='tab-1-content', children=[
+        dbc.Row([
+            dbc.Col([
+                html.Div([
+                    summary_description_card(),
+                    html.P("Release Date"),
+                    dcc.DatePickerRange(
+                            id='date-picker-range-1',
+                            start_date_placeholder_text='Start Date',
+                            end_date_placeholder_text='End Date'
+                        ),
+                    html.Br(),
+                    html.Br(),
+                    html.P("Genre"),
+                    dcc.Dropdown(
+                            id='genre-dropdown-1',
+                            options=[{'label': 'Select All', 'value': 'all'}] + [{'label': genre, 'value': genre} for genre in genre_list],
+                            value=['all'],
+                            multi=True,
+                            style={'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
+                        ),
+                    html.Br(),
+                    html.P("SubGenre"),
+                    dcc.Dropdown(
+                            id='subgenre-dropdown-1',
+                            options=[{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list],
+                            value=['all'],
+                            multi=True,
+                            style={'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
+                        ),
+                    html.Br(),
+                    html.P("Artist"),
+                    dcc.Dropdown(
+                            id='artist-dropdown-1',
+                            options=[{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list],
+                            value=['all'],
+                            multi=True,
+                            style={'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
+                        ),
+                    html.Br(),
+                    dbc.Row([
+                                dbc.Col(html.Button('Apply', id='apply-button-1', n_clicks=0,
+                                                    style={'border': '2px solid #1f1e1e',
+                                                            'background-color': '#1f1e1e',
+                                                            'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
+                                                            'border-radius': '10px','margin-right': '5px'}), width=3),
+                                dbc.Col(html.Button('Reset', id='reset-button-1', n_clicks=0,
+                                                    style={'border': '2px solid #1f1e1e',
+                                                            'background-color': '#1f1e1e',
+                                                            'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
+                                                            'border-radius': '10px'}), width=3)
+                            ])
+                    ])],width="4"
+                ),
+            dbc.Col([
+                # The first plot column 
+                html.Div(
+                    id="popularity-level-distribution-chart",
+                    children=[
+                        html.H4("Popularity and Genre Distribution"),
+                        html.Iframe(
+                            id="popularity-level-distribution-chart-iframe",
+                            style={'border-width': '0', 'width': '100%', 'height': '400px'},
+                        ),
+                    ],
+                ),
+                html.Div(
+                    id="top-10-popularity-songs-artists-chart",
+                    children=[
+                        html.H4("Top 10 Popularity Songs & Artists"),
+                        html.Iframe(
+                            id="top-10-popularity-songs-artists-chart-iframe",
+                            style={'border-width': '0', 'width': '100%', 'height': '1000px'},
+                        ),
+                    ],
+                ),                    
+                ],width="4"),
+            dbc.Col([
+                # The second plot column
+                html.Div(
+                    id="decade-trend-line-chart",
+                    children=[
+                        html.H4("Decade Trend Line Chart"),
+                        html.Iframe(
+                            id="decade-trend-line-chart-iframe",
+                            style={'border-width': '0', 'width': '100%', 'height': '400px'},
+                        ),
+                    ],
+                    ),
+                html.Div(
+                    id="feature_scatter-chart",
+                    children=[
+                        html.H4("Two-Feature Scatter Plot"),
+                        "Release Year",
+                        dbc.Row([
+                            dbc.Col([
+                                dcc.Slider(id='year-slider', 
+                                    min=1957, max=2021, 
+                                    value=2000,
+                                    marks={1960: '1960', 1970: '1970', 1980: '1980', 1990: '1990', 2000: '2000', 2010: '2010'},
+                                    updatemode='drag',
+                                    step=1),
+                                ], width=9),
+                            dbc.Col([
+                                html.Div(id='year-output')],
+                                style={'margin-left': '-30px', 'margin-top': '-5px'},
+                                width=1)]),
+                        dbc.Row([
+                            dbc.Col([
+                                "Feature 1",
+                                dcc.Dropdown(
+                                        id='feature1-dropdown',
+                                        options=[{'label': feature, 'value': feature} for feature in feature_list],
+                                        value='danceability',
+                                        multi=False,
+                                        style={'width': '200px','backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'} 
+                                    ),]),
+                            dbc.Col([
+                                "Feature 2",
+                                dcc.Dropdown(
+                                        id='feature2-dropdown',
+                                        options=[{'label': feature, 'value': feature} for feature in feature_list],
+                                        value='liveness',
+                                        multi=False,
+                                        style={'width': '200px','backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
+                                    ),]),
+                        ]),
+                        html.Iframe(
+                            id="feature_scatter-chart-iframe",
+                            style={'border-width': '0', 'width': '100%', 'height': '800px'},
+                        ),     
+                    ],
+                ),
+                ],width="4")]
+            )])
+
+tab2 =  html.Div(id='tab-2-content', children=[
+        dbc.Row([
+            dbc.Col(
+                html.Div([
+                    feature_description_card(),
+                    html.P("Release Date"),
+                    dcc.DatePickerRange(
+                        id='date-picker-range-2',
+                        start_date_placeholder_text='Start Date',
+                        end_date_placeholder_text='End Date',
+                    ),
+                    html.Br(),
+                    html.Br(),
+                    html.P("Genre"),
+                    dcc.Dropdown(
+                        id='genre-dropdown-2',
+                        options=[{'label': 'Select All', 'value': 'all'}] + [{'label': genre, 'value': genre} for genre in genre_list],
+                        value=['all'],  # Default value
+                        multi=True,
+                        style={'backgroundColor': 'black', 'color': '#16E536'},
+                        className='custom-dropdown'
+                    ),
+                    html.Br(),
+                    html.P("SubGenre"),
+                    dcc.Dropdown(
+                        id='subgenre-dropdown-2',
+                        options=[{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list],
+                        value=['all'],  # Default value
+                        multi=True,
+                        style={'backgroundColor': 'black', 'color': '#16E536'}
+                    ),
+                    html.Br(),
+                    html.P("Artist"),
+                    dcc.Dropdown(
+                        id='artist-dropdown-2',
+                        options=[{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list],
+                        value=['all'],  # Default value
+                        multi=True,
+                        style={'backgroundColor': 'black', 'color': '#16E536'}
+                    ),
+                    html.Br(),
+                    html.P("Feature"),
+                    dcc.Dropdown(
+                        id='feature-dropdown',
+                        options=[{'label': 'Select All', 'value': 'all'}] + [{'label': feature, 'value': feature} for feature in feature_list],
+                        value=['all'],  # Default value
+                        multi=True,
+                        style={'backgroundColor': 'black', 'color': '#16E536'}
+                    ),
+                    html.Br(),
+                    dbc.Row([
+                        dbc.Col(html.Button('Apply', id='apply-button-2', n_clicks=0,
+                                            style={'border': '2px solid #1f1e1e',
+                                                    'background-color': '#1f1e1e',
+                                                    'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
+                                                    'border-radius': '10px','margin-right': '5px'}), width=3),
+                        dbc.Col(html.Button('Reset', id='reset-button-2', n_clicks=0,
+                                            style={'border': '2px solid #1f1e1e',
+                                                    'background-color': '#1f1e1e',
+                                                    'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
+                                                    'border-radius': '10px'}), width=3)
+                            ])
+                ]),width="4",
+            ),
+            dbc.Col(
+                [html.H3("Popularity Distribution"),
+                    html.Div(id='feature-charts-container')
+                ],width="8"
+            )
+        ])])
+
+tab3 =  html.Div(id='tab-3-content', children=[
+        dbc.Row([
+        dbc.Col([
+        dbc.Container([
+            html.H3('Set Features for Your Song'),
+            dbc.Row([
+                dbc.Col([html.Img(src='assets/dance.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
+                dbc.Col([html.Label('Danceability', style={'margin-left': '-130px'})]),
+                dbc.Col([html.Img(src='assets/energy.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
+                dbc.Col([html.Label('Energy', style={'margin-left': '-130px'})])
+            ], style={'border-top': '3px solid lightgrey', 'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px', 'border-top-left-radius':'10px', 'border-top-right-radius':'10px'}),
+            dbc.Row([
+                dbc.Col([
+                    html.Div([
+                        dcc.Slider(
+                            id='danceability',
+                            min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                            updatemode='drag'
+                        )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'}),
+                ], width=5),
+                dbc.Col([
+                    html.Div(id='danceability-output')],
+                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    width=1),
+                dbc.Col([
+                    html.Div([
+                        dcc.Slider(
+                            id='energy',
+                            min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                            updatemode='drag'
+                        )],  style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                ]),
+                dbc.Col([
+                    html.Div(id='energy-output')],
+                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    width=1),
+                html.Br()
+            ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+            dbc.Row([
+                dbc.Col([html.Img(src='assets/speech.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
+                dbc.Col([html.Label('Speechiness', style={'margin-left': '-130px'})]),
+                dbc.Col([html.Img(src='assets/acoustic.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
+                dbc.Col([html.Label('Acousticness', style={'margin-left': '-130px'})])
+            ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+            dbc.Row([
+                dbc.Col([
+                    html.Div([
+                        dcc.Slider(
+                            id='speechiness',
+                            min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                            updatemode='drag'
+                        )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                ], width=5),
+                dbc.Col([
+                    html.Div(id='speechiness-output')],
+                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    width=1),
+                dbc.Col([
+                    html.Div([
+                        dcc.Slider(
+                            id='acousticness',
+                            min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                            updatemode='drag'
+                        )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                ]),
+                dbc.Col([
+                    html.Div(id='acousticness-output')],
+                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    width=1),
+                html.Br()
+            ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+            dbc.Row([
+                dbc.Col([html.Img(src='assets/instrumental.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
+                dbc.Col([html.Label('Instrumentalness', style={'margin-left': '-130px'})]),
+                dbc.Col([html.Img(src='assets/liveness.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
+                dbc.Col([html.Label('Liveness', style={'margin-left': '-130px'})])
+            ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+            dbc.Row([
+                dbc.Col([
+                    html.Div([
+                        dcc.Slider(
+                            id='instrumentalness',
+                            min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                            updatemode='drag'
+                        )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                    ], width=5),
+                dbc.Col([
+                    html.Div(id='instrumentalness-output')],
+                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    width=1),
+                dbc.Col([
+                        html.Div([
+                            dcc.Slider(
+                                id='liveness',
+                                min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                                updatemode='drag'
+                            )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                    ]),
+                dbc.Col([
+                    html.Div(id='liveness-output')],
+                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    width=1),
+                html.Br()
+                ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+            dbc.Row([
+                dbc.Col([html.Img(src='assets/valence.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
+                dbc.Col([html.Label('Valence', style={'margin-left': '-130px'})]),
+                dbc.Col([html.Img(src='assets/loudness.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
+                dbc.Col([html.Label('Loudness', style={'margin-left': '-130px'})])
+            ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+            dbc.Row([
+                dbc.Col([
+                    html.Div([
+                        dcc.Slider(
+                            id='valence',
+                            min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
+                            updatemode='drag')
+                    ], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                ], width=5),
+                dbc.Col([
+                    html.Div(id='valence-output')],
+                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    width=1),
+                dbc.Col([
+                    html.Div([
+                        dcc.Slider(
+                            id='loudness',
+                            min=-47, max=1.5, value=-47, marks={-47: '-47', -40: '-40', -30: '-30', -20: '-20', -10: '-10', 1.5: '1.5'},
+                            updatemode='drag'
+                        )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                ]),
+                dbc.Col([
+                    html.Div(id='loudness-output')],
+                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    width=1),
+                html.Br()
+            ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+            dbc.Row([
+                dbc.Col([html.Img(src='assets/tempo.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
+                dbc.Col([html.Label('Tempo', style={'margin-left': '-130px'})]),
+                dbc.Col([html.Img(src='assets/mode.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
+                dbc.Col([html.Label('Mode', style={'margin-left': '-130px'})])
+            ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+            dbc.Row([
+                dbc.Col([
+                        html.Div([
+                            dcc.Slider(
+                                id='tempo',
+                                min=0, max=240, value=0, marks={0: '0', 30: '30', 60: '60', 90: '90', 120: '120', 150: '150', 180: '180', 210: '210', 240: '240'},
+                                updatemode='drag'
+                            )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                    ], width=5),
+                dbc.Col([
+                    html.Div(id='tempo-output')],
+                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    width=1),
+                dbc.Col([
+                    html.Div([  
+                        dcc.Dropdown(
+                            id='mode',
+                            options=[{'label': '0', 'value': 0}, {'label': '1', 'value': 1}],
+                            multi=False,
+                            clearable=True,
+                            style = {'color': '#16E536'}
+                        )], style={'margin-top': '-20px', 'width': '100%'}
+                    )
+                ]),
+                html.Br()
+            ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+            dbc.Row([
+                dbc.Col([html.Img(src='assets/genre.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
+                dbc.Col([html.Label('Genre', style={'margin-left': '-130px'})]),
+                dbc.Col([html.Img(src='assets/key.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
+                dbc.Col([html.Label('Key', style={'margin-left': '-130px'})])
+            ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+            dbc.Row([
+                dbc.Col([
+                    html.Div([
+                        dcc.Dropdown(
+                            id='genre',
+                            options=[
+                                {'label': 'EDM', 'value': 'edm'},
+                                {'label': 'Latin', 'value': 'latin'},
+                                {'label': 'Pop', 'value': 'pop'},
+                                {'label': 'R&B', 'value': 'r&b'},
+                                {'label': 'Rap', 'value': 'rap'},
+                                {'label': 'Rock', 'value': 'rock'}
+                            ],
+                            multi=False,
+                            clearable=True,
+                            searchable=True,
+                            style={'color': '#16E536'})
+                    ], style={'margin-top': '-20px', 'width': '100%'})
+                ]),
+                dbc.Col([
+                    html.Div([
+                        dcc.Dropdown(
+                            id='key',
+                            options=[{'label': str(i), 'value': i} for i in range(12)],
+                            multi=False,
+                            clearable=True,
+                            style={'color': '#16E536'}
+                    )], style={'margin-top': '-20px', 'margin-left': '-5px', 'width': '102%'})
+                ]),
+                html.Br()
+            ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
+            dbc.Row([
+                html.Label('Duration'),
+                dbc.Col([
+                    html.Div([
+                        dcc.Input(
+                            id='minutes',
+                            type='number',
+                            placeholder='Enter minutes...',
+                            min=0,
+                            style={'border': '2px solid rgb(26, 24, 24)', 'border-radius': '10px', 'background-color': 'rgb(26, 24, 24)', 'color': '#16E536'})
+                        ])
+                ]),
+                dbc.Col([html.Label('minutes')], style={'margin-left': '-10px'}),
+                dbc.Col([
+                    html.Div([
+                        dcc.Input(
+                            id='seconds',
+                            type='number',
+                            placeholder='Enter seconds...',
+                            min=0,
+                            max=59,
+                            style={'border': '2px solid rgb(26, 24, 24)', 'border-radius': '10px', 'background-color': 'rgb(26, 24, 24)', 'color': '#16E536'})
+                    ])
+                ]),
+                dbc.Col([html.Label('seconds')], style={'margin-left': '-10px', 'color': '#16E536'})
+            ],style={'border-bottom': '3px solid lightgrey', 'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px', 'border-bottom-left-radius':'10px', 'border-bottom-right-radius':'10px'}),
+            html.Br(),
+            dbc.Row([
+                dbc.Col([
+                html.Button('Apply', id='apply', n_clicks=0, style={'border': '2px solid #1f1e1e', 'background-color': '#1f1e1e', 'color': 'rgb(4, 184, 4)', 'fontweight': 'bold', 'border-radius': '10px'})]),
+                dbc.Col([
+                    html.Button('Reset', id='reset-button-3', n_clicks=0,
+                                style={'border': '2px solid #1f1e1e',
+                                        'background-color': '#1f1e1e',
+                                        'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
+                                        'border-radius': '10px',
+                                        'align': 'left'})], width=3),
+                dbc.Col([]),
+                dbc.Col([])]),
+        ])
+        ]),
+        dbc.Col([
+        dbc.Container([
+            dbc.Col([
+                html.H3('The Predicted Popularity'),
+                dbc.Row([
+                html.Iframe(id='pred-result',width=400,height=350)], style={'margin': '0 auto -7px 140px', 'margin-left': '160px'}),
+                dbc.Row([
+                dcc.Graph(id='pred-radar', style={'margin': '0 auto', 'width':'600px', 'height':'420px', 'margin-top': '-50px'})])
+            ], style={'align':'center'})
+        ])
+    ])
+])])
+
+tabs =  dcc.Tabs([
+        dcc.Tab(label='Summary', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '0px', 'fontSize': 24}, 
+                selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 24},
+                value='tab-1'
+        ),
+        dcc.Tab(label='By Feature', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '0px', 'fontSize': 24, 'white-space': 'nowrap'}, 
+                selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 24, 'white-space': 'nowrap'},
+                value='tab-2'
+        ),   
+        dcc.Tab(label='Prediction', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '0px', 'fontSize': 24}, 
+                selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 24},
+                value='tab-3')
+    ], id='tabs-label')
 
 # Define the layout of the Dash app
 app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'}, children=[
-    dbc.Container(
-    dcc.Tabs([
-        dcc.Tab(label='Summary', style={'backgroundColor': '#201F1F', 'border': '0px', 'fontSize': 24}, 
-                selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 24}, children=[
-            dbc.Row([
-                dbc.Col([
-                    html.Div([
-                            summary_description_card(),
-                            html.P("Release Date"),
-                            dcc.DatePickerRange(
-                                    id='date-picker-range-1',
-                                    start_date_placeholder_text='Start Date',
-                                    end_date_placeholder_text='End Date'
-                                ),
-                            html.Br(),
-                            html.Br(),
-                            html.P("Genre"),
-                            dcc.Dropdown(
-                                    id='genre-dropdown-1',
-                                    options=[{'label': 'Select All', 'value': 'all'}] + [{'label': genre, 'value': genre} for genre in genre_list],
-                                    value=['all'],
-                                    multi=True,
-                                    style={'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
-                                ),
-                            html.Br(),
-                            html.P("SubGenre"),
-                            dcc.Dropdown(
-                                    id='subgenre-dropdown-1',
-                                    options=[{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list],
-                                    value=['all'],
-                                    multi=True,
-                                    style={'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
-                                ),
-                            html.Br(),
-                            html.P("Artist"),
-                            dcc.Dropdown(
-                                    id='artist-dropdown-1',
-                                    options=[{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list],
-                                    value=['all'],
-                                    multi=True,
-                                    style={'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
-                                ),
-                            html.Br(),
-                            dbc.Row([
-                                        dbc.Col(html.Button('Apply', id='apply-button-1', n_clicks=0,
-                                                            style={'border': '2px solid #1f1e1e',
-                                                                   'background-color': '#1f1e1e',
-                                                                   'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
-                                                                   'border-radius': '10px','margin-right': '5px'}), width=3),
-                                        dbc.Col(html.Button('Reset', id='reset-button-1', n_clicks=0,
-                                                            style={'border': '2px solid #1f1e1e',
-                                                                   'background-color': '#1f1e1e',
-                                                                   'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
-                                                                   'border-radius': '10px'}), width=3)
-                                    ])
-                            ])],width="4"
-                        ),
-                dbc.Col([
-                    # The first plot column 
-                    html.Div(
-                        id="popularity-level-distribution-chart",
-                        children=[
-                            html.H4("Popularity and Genre Distribution"),
-                            html.Iframe(
-                                id="popularity-level-distribution-chart-iframe",
-                                style={'border-width': '0', 'width': '100%', 'height': '400px'},
-                            ),
-                        ],
-                    ),
-                    html.Div(
-                        id="top-10-popularity-songs-artists-chart",
-                        children=[
-                            html.H4("Top 10 Popularity Songs & Artists"),
-                            html.Iframe(
-                                id="top-10-popularity-songs-artists-chart-iframe",
-                                style={'border-width': '0', 'width': '100%', 'height': '1000px'},
-                            ),
-                        ],
-                    ),                    
-                    ],width="4"),
-                dbc.Col([
-                    # The second plot column
-                    html.Div(
-                        id="decade-trend-line-chart",
-                        children=[
-                            html.H4("Decade Trend Line Chart"),
-                            html.Iframe(
-                                id="decade-trend-line-chart-iframe",
-                                style={'border-width': '0', 'width': '100%', 'height': '400px'},
-                            ),
-                        ],
-                        ),
-                    html.Div(
-                        id="feature_scatter-chart",
-                        children=[
-                            html.H4("Two-Feature Scatter Plot"),
-                            "Release Year",
-                            dbc.Row([
-                                dbc.Col([
-                                    dcc.Slider(id='year-slider', 
-                                       min=1957, max=2021, 
-                                       value=2000,
-                                       marks={1960: '1960', 1970: '1970', 1980: '1980', 1990: '1990', 2000: '2000', 2010: '2010'},
-                                       updatemode='drag',
-                                       step=1),
-                                    ], width=9),
-                                dbc.Col([
-                                    html.Div(id='year-output')],
-                                    style={'margin-left': '-30px', 'margin-top': '-5px'},
-                                    width=1)]),
-                            dbc.Row([
-                                dbc.Col([
-                                    "Feature 1",
-                                    dcc.Dropdown(
-                                            id='feature1-dropdown',
-                                            options=[{'label': feature, 'value': feature} for feature in feature_list],
-                                            value='danceability',
-                                            multi=False,
-                                            style={'width': '200px','backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'} 
-                                        ),]),
-                                dbc.Col([
-                                    "Feature 2",
-                                    dcc.Dropdown(
-                                            id='feature2-dropdown',
-                                            options=[{'label': feature, 'value': feature} for feature in feature_list],
-                                            value='liveness',
-                                            multi=False,
-                                            style={'width': '200px','backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
-                                        ),]),
-                            ]),
-                            html.Iframe(
-                                id="feature_scatter-chart-iframe",
-                                style={'border-width': '0', 'width': '100%', 'height': '800px'},
-                            ),     
-                        ],
-                    ),
-                    ],width="4")]
-                ),]            
-        ),
-        dcc.Tab(label='By Feature', style={'backgroundColor': '#201F1F', 'border': '0px', 'fontSize': 24}, 
-                selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 24}, children=[  
-            dbc.Row([
-                dbc.Col(
-                    html.Div([
-                            feature_description_card(),
-                            html.P("Release Date"),
-                            dcc.DatePickerRange(
-                                id='date-picker-range-2',
-                                start_date_placeholder_text='Start Date',
-                                end_date_placeholder_text='End Date',
-                            ),
-                            html.Br(),
-                            html.Br(),
-                            html.P("Genre"),
-                            dcc.Dropdown(
-                                id='genre-dropdown-2',
-                                options=[{'label': 'Select All', 'value': 'all'}] + [{'label': genre, 'value': genre} for genre in genre_list],
-                                value=['all'],  # Default value
-                                multi=True,
-                                style={'backgroundColor': 'black', 'color': '#16E536'},
-                                className='custom-dropdown'
-                            ),
-                            html.Br(),
-                            html.P("SubGenre"),
-                            dcc.Dropdown(
-                                id='subgenre-dropdown-2',
-                                options=[{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list],
-                                value=['all'],  # Default value
-                                multi=True,
-                                style={'backgroundColor': 'black', 'color': '#16E536'}
-                            ),
-                            html.Br(),
-                            html.P("Artist"),
-                            dcc.Dropdown(
-                                id='artist-dropdown-2',
-                                options=[{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list],
-                                value=['all'],  # Default value
-                                multi=True,
-                                style={'backgroundColor': 'black', 'color': '#16E536'}
-                            ),
-                            html.Br(),
-                            html.P("Feature"),
-                            dcc.Dropdown(
-                                id='feature-dropdown',
-                                options=[{'label': 'Select All', 'value': 'all'}] + [{'label': feature, 'value': feature} for feature in feature_list],
-                                value=['all'],  # Default value
-                                multi=True,
-                                style={'backgroundColor': 'black', 'color': '#16E536'}
-                            ),
-                            html.Br(),
-                            dbc.Row([
-                                        dbc.Col(html.Button('Apply', id='apply-button-2', n_clicks=0,
-                                                            style={'border': '2px solid #1f1e1e',
-                                                                   'background-color': '#1f1e1e',
-                                                                   'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
-                                                                   'border-radius': '10px','margin-right': '5px'}), width=3),
-                                        dbc.Col(html.Button('Reset', id='reset-button-2', n_clicks=0,
-                                                            style={'border': '2px solid #1f1e1e',
-                                                                   'background-color': '#1f1e1e',
-                                                                   'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
-                                                                   'border-radius': '10px'}), width=3)
-                                    ])
-                        ]),width="4",
-                ),
-                dbc.Col(
-                    [html.H3("Popularity Distribution"),
-                     html.Div(id='feature-charts-container')
-                    ],width="8"
-                )
-            ]),            
-            ]),   
-        dcc.Tab(label='Prediction', style={'backgroundColor': '#201F1F', 'border': '0px', 'fontSize': 24}, 
-                selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 24}, children=[
-        dbc.Row([
-            dbc.Col([
-            dbc.Container([
-                html.H3('Set Features for Your Song'),
-                dbc.Row([
-                    dbc.Col([html.Img(src='assets/dance.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                    dbc.Col([html.Label('Danceability', style={'margin-left': '-130px'})]),
-                    dbc.Col([html.Img(src='assets/energy.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                    dbc.Col([html.Label('Energy', style={'margin-left': '-130px'})])
-                ], style={'border-top': '3px solid lightgrey', 'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px', 'border-top-left-radius':'10px', 'border-top-right-radius':'10px'}),
-                dbc.Row([
-                    dbc.Col([
-                        html.Div([
-                            dcc.Slider(
-                                id='danceability',
-                                min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
-                                updatemode='drag'
-                            )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'}),
-                    ], width=5),
-                    dbc.Col([
-                        html.Div(id='danceability-output')],
-                        style={'margin-left': '-5px', 'margin-top': '-20px'},
-                        width=1),
-                    dbc.Col([
-                        html.Div([
-                            dcc.Slider(
-                                id='energy',
-                                min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
-                                updatemode='drag'
-                            )],  style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
-                    ]),
-                    dbc.Col([
-                        html.Div(id='energy-output')],
-                        style={'margin-left': '-5px', 'margin-top': '-20px'},
-                        width=1),
-                    html.Br()
-                ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
-                dbc.Row([
-                    dbc.Col([html.Img(src='assets/speech.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                    dbc.Col([html.Label('Speechiness', style={'margin-left': '-130px'})]),
-                    dbc.Col([html.Img(src='assets/acoustic.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                    dbc.Col([html.Label('Acousticness', style={'margin-left': '-130px'})])
-                ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
-                dbc.Row([
-                    dbc.Col([
-                        html.Div([
-                            dcc.Slider(
-                                id='speechiness',
-                                min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
-                                updatemode='drag'
-                            )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
-                    ], width=5),
-                    dbc.Col([
-                        html.Div(id='speechiness-output')],
-                        style={'margin-left': '-5px', 'margin-top': '-20px'},
-                        width=1),
-                    dbc.Col([
-                        html.Div([
-                            dcc.Slider(
-                                id='acousticness',
-                                min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
-                                updatemode='drag'
-                            )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
-                    ]),
-                    dbc.Col([
-                        html.Div(id='acousticness-output')],
-                        style={'margin-left': '-5px', 'margin-top': '-20px'},
-                        width=1),
-                    html.Br()
-                ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
-                dbc.Row([
-                    dbc.Col([html.Img(src='assets/instrumental.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                    dbc.Col([html.Label('Instrumentalness', style={'margin-left': '-130px'})]),
-                    dbc.Col([html.Img(src='assets/liveness.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                    dbc.Col([html.Label('Liveness', style={'margin-left': '-130px'})])
-                ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
-                dbc.Row([
-                    dbc.Col([
-                        html.Div([
-                            dcc.Slider(
-                                id='instrumentalness',
-                                min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
-                                updatemode='drag'
-                            )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
-                        ], width=5),
-                    dbc.Col([
-                        html.Div(id='instrumentalness-output')],
-                        style={'margin-left': '-5px', 'margin-top': '-20px'},
-                        width=1),
-                    dbc.Col([
-                            html.Div([
-                                dcc.Slider(
-                                    id='liveness',
-                                    min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
-                                    updatemode='drag'
-                                )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
-                        ]),
-                    dbc.Col([
-                        html.Div(id='liveness-output')],
-                        style={'margin-left': '-5px', 'margin-top': '-20px'},
-                        width=1),
-                    html.Br()
-                    ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
-                dbc.Row([
-                    dbc.Col([html.Img(src='assets/valence.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                    dbc.Col([html.Label('Valence', style={'margin-left': '-130px'})]),
-                    dbc.Col([html.Img(src='assets/loudness.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                    dbc.Col([html.Label('Loudness', style={'margin-left': '-130px'})])
-                ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
-                dbc.Row([
-                    dbc.Col([
-                        html.Div([
-                            dcc.Slider(
-                                id='valence',
-                                min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
-                                updatemode='drag')
-                        ], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
-                    ], width=5),
-                    dbc.Col([
-                        html.Div(id='valence-output')],
-                        style={'margin-left': '-5px', 'margin-top': '-20px'},
-                        width=1),
-                    dbc.Col([
-                        html.Div([
-                            dcc.Slider(
-                                id='loudness',
-                                min=-47, max=1.5, value=-47, marks={-47: '-47', -40: '-40', -30: '-30', -20: '-20', -10: '-10', 1.5: '1.5'},
-                                updatemode='drag'
-                            )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
-                    ]),
-                    dbc.Col([
-                        html.Div(id='loudness-output')],
-                        style={'margin-left': '-5px', 'margin-top': '-20px'},
-                        width=1),
-                    html.Br()
-                ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
-                dbc.Row([
-                    dbc.Col([html.Img(src='assets/tempo.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                    dbc.Col([html.Label('Tempo', style={'margin-left': '-130px'})]),
-                    dbc.Col([html.Img(src='assets/mode.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                    dbc.Col([html.Label('Mode', style={'margin-left': '-130px'})])
-                ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
-                dbc.Row([
-                    dbc.Col([
-                            html.Div([
-                                dcc.Slider(
-                                    id='tempo',
-                                    min=0, max=240, value=0, marks={0: '0', 30: '30', 60: '60', 90: '90', 120: '120', 150: '150', 180: '180', 210: '210', 240: '240'},
-                                    updatemode='drag'
-                                )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
-                        ], width=5),
-                    dbc.Col([
-                        html.Div(id='tempo-output')],
-                        style={'margin-left': '-5px', 'margin-top': '-20px'},
-                        width=1),
-                    dbc.Col([
-                        html.Div([  
-                            dcc.Dropdown(
-                                id='mode',
-                                options=[{'label': '0', 'value': 0}, {'label': '1', 'value': 1}],
-                                multi=False,
-                                clearable=True,
-                                placeholder='Please select the mode...'
-                            )], style={'margin-top': '-20px', 'width': '100%'}
-                        )
-                    ]),
-                    html.Br()
-                ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
-                dbc.Row([
-                    dbc.Col([html.Img(src='assets/genre.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                    dbc.Col([html.Label('Genre', style={'margin-left': '-130px'})]),
-                    dbc.Col([html.Img(src='assets/key.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                    dbc.Col([html.Label('Key', style={'margin-left': '-130px'})])
-                ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
-                dbc.Row([
-                    dbc.Col([
-                        html.Div([
-                            dcc.Dropdown(
-                                id='genre',
-                                options=[
-                                    {'label': 'EDM', 'value': 'edm'},
-                                    {'label': 'Latin', 'value': 'latin'},
-                                    {'label': 'Pop', 'value': 'pop'},
-                                    {'label': 'R&B', 'value': 'r&b'},
-                                    {'label': 'Rap', 'value': 'rap'},
-                                    {'label': 'Rock', 'value': 'rock'}
-                                ],
-                                multi=False,
-                                clearable=True,
-                                searchable=True,
-                                placeholder='Please select the genre of the song...')
-                        ], style={'margin-top': '-20px', 'width': '100%'})
-                    ]),
-                    dbc.Col([
-                        html.Div([
-                            dcc.Dropdown(
-                                id='key',
-                                options=[{'label': str(i), 'value': i} for i in range(12)],
-                                multi=False,
-                                clearable=True,
-                                placeholder='Please select the key...'
-                        )], style={'margin-top': '-20px', 'margin-left': '-5px', 'width': '102%'})
-                    ]),
-                    html.Br()
-                ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
-                dbc.Row([
-                    html.Label('Duration'),
-                    dbc.Col([
-                        html.Div([
-                            dcc.Input(
-                                id='minutes',
-                                type='number',
-                                placeholder='Enter minutes...',
-                                min=0,
-                                style={'border': '2px solid rgb(26, 24, 24)', 'border-radius': '10px', 'background-color': 'rgb(26, 24, 24)'})
-                            ])
-                    ]),
-                    dbc.Col([html.Label('minutes')], style={'margin-left': '-10px'}),
-                    dbc.Col([
-                        html.Div([
-                            dcc.Input(
-                                id='seconds',
-                                type='number',
-                                placeholder='Enter seconds...',
-                                min=0,
-                                max=59,
-                                style={'border': '2px solid rgb(26, 24, 24)', 'border-radius': '10px', 'background-color': 'rgb(26, 24, 24)'})
-                        ])
-                    ]),
-                    dbc.Col([html.Label('seconds')], style={'margin-left': '-10px'})
-                ],style={'border-bottom': '3px solid lightgrey', 'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px', 'border-bottom-left-radius':'10px', 'border-bottom-right-radius':'10px'}),
-                html.Br(),
-                dbc.Row([
-                    dbc.Col([
-                    html.Button('Apply', id='apply', n_clicks=0, style={'border': '2px solid #1f1e1e', 'background-color': '#1f1e1e', 'color': 'rgb(4, 184, 4)', 'fontweight': 'bold', 'border-radius': '10px'})])]),
-                    dbc.Col([])
-            ])
-            ]),
-            dbc.Col([
-            dbc.Container([
-                dbc.Col([
-                    html.H3('The Predicted Popularity'),
-                    dbc.Row([
-                    html.Iframe(id='pred-result',width=400,height=350)], style={'margin': '0 auto -7px 140px', 'margin-left': '120px'}),
-                    dbc.Row([
-                    dcc.Graph(id='pred-radar', style={'margin': '0 auto', 'width':'600px', 'height':'420px', 'margin-top': '-50px'})])
-                ], style={'align':'center'})
-            ])
-        ])
-    ])
-            ]),
-    ]),
-    fluid=True
-)
+    dbc.Row([
+        dbc.Col([html.Img(src='assets/spotify.png', style={'width': '40px', 'height': '40px', 'background-color':'transparent', 'margin-top': '15px'})], width='auto'),
+        dbc.Col([html.H2('Spotify Music Marketing', style={'fontSize': 36, 'textAlign': 'left', 'margin-top': '10px'})], width=True),
+        dbc.Col(tabs, width='auto')]),
+    html.Div([
+        dbc.Row(html.Div(id='tabs-content'))],
+        style={'background-color':'#191A19'})
 ])
 
 # Define callback to reset all filters
@@ -616,6 +646,27 @@ def reset_all_filters(n_clicks):
     artist_value = ['all']
     feature_value = ['all']
     return start_date, end_date, genre_value,subgenre_value,artist_value,feature_value
+
+@app.callback(
+    [Output('genre', 'value'),
+     Output('danceability', 'value'),
+     Output('energy', 'value'),
+     Output('key', 'value'),
+     Output('loudness', 'value'),
+     Output('mode', 'value'),
+     Output('speechiness', 'value'),
+     Output('acousticness', 'value'),
+     Output('instrumentalness', 'value'),
+     Output('liveness', 'value'),
+     Output('valence', 'value'),
+     Output('tempo', 'value'),
+     Output('minutes', 'value'),
+     Output('seconds', 'value')],
+    [Input('reset-button-3', 'n_clicks')]
+)
+def reset_all_filters(n_clicks):
+    genre, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, minutes, seconds = None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    return genre, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, minutes, seconds
 
 # Define callback to update charts
 
@@ -923,6 +974,18 @@ def update_output(n_clicks, genre, danceability, energy, key, loudness, mode, sp
         return result, radar
     else:
         return pred_chart(0), track_radar(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    
+@app.callback(
+    Output('tabs-content', 'children'),
+    [Input('tabs-label', 'value')]
+)
+def render_tab_content(tab):
+    if tab == 'tab-2':
+        return tab2
+    elif tab == 'tab-3':
+        return tab3
+    else:
+        return tab1
 
 if __name__ == "__main__":
     app.run_server(debug=True)

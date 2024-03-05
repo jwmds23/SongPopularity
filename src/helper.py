@@ -95,7 +95,8 @@ def pop_predict(type, danceability, energy, key, loudness, mode, speechiness, ac
 
     return model.predict(pred_df)[0]
 
-def pred_chart(result):    
+def pred_chart(result):
+    alt.themes.enable('transparent_bg')
     df_pred = pd.DataFrame({'result': [result, 100-result],
                         'category': [1, 2]})
     circle_chart = alt.Chart(df_pred).mark_arc(innerRadius=80).encode(
@@ -127,6 +128,7 @@ def handle_select_all(selected_values, options_list):
 
 # plot function for feature tab
 def create_feature_distribution_charts(df, selected_features):
+    alt.themes.enable('grey_bg')
     charts = []
     
     # Define a single selection that binds to the legend and allows toggling
