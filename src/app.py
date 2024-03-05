@@ -156,8 +156,18 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                     style={'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
                                 ),
                             html.Br(),
-                            html.Button('Apply', id='apply-button-1', n_clicks=0,
-                                        style={'border': '2px solid #1f1e1e', 'background-color': '#1f1e1e', 'color': 'rgb(4, 184, 4)', 'fontweight': 'bold', 'border-radius': '10px'}),
+                            dbc.Row([
+                                        dbc.Col(html.Button('Apply', id='apply-button-1', n_clicks=0,
+                                                            style={'border': '2px solid #1f1e1e',
+                                                                   'background-color': '#1f1e1e',
+                                                                   'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
+                                                                   'border-radius': '10px','margin-right': '5px'}), width=3),
+                                        dbc.Col(html.Button('Reset', id='reset-button-1', n_clicks=0,
+                                                            style={'border': '2px solid #1f1e1e',
+                                                                   'background-color': '#1f1e1e',
+                                                                   'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
+                                                                   'border-radius': '10px'}), width=3)
+                                    ])
                             ])],width="4"
                         ),
                 dbc.Col([
@@ -293,8 +303,18 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
                                 style={'backgroundColor': 'black', 'color': '#16E536'}
                             ),
                             html.Br(),
-                            html.Button('Apply', id='apply-button-2', n_clicks=0,
-                                        style={'border': '2px solid #1f1e1e', 'background-color': '#1f1e1e', 'color': 'rgb(4, 184, 4)', 'fontweight': 'bold', 'border-radius': '10px'}),
+                            dbc.Row([
+                                        dbc.Col(html.Button('Apply', id='apply-button-2', n_clicks=0,
+                                                            style={'border': '2px solid #1f1e1e',
+                                                                   'background-color': '#1f1e1e',
+                                                                   'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
+                                                                   'border-radius': '10px','margin-right': '5px'}), width=3),
+                                        dbc.Col(html.Button('Reset', id='reset-button-2', n_clicks=0,
+                                                            style={'border': '2px solid #1f1e1e',
+                                                                   'background-color': '#1f1e1e',
+                                                                   'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
+                                                                   'border-radius': '10px'}), width=3)
+                                    ])
                         ]),width="4",
                 ),
                 dbc.Col(
@@ -562,7 +582,40 @@ app.layout = html.Div(style = {'backgroundColor': '#060606', 'color':'#16E536'},
 )
 ])
 
+# Define callback to reset all filters
+@app.callback(
+    [Output('date-picker-range-1', 'start_date'),
+     Output('date-picker-range-1', 'end_date'),
+     Output('genre-dropdown-1', 'value'),
+     Output('subgenre-dropdown-1', 'value'),
+     Output('artist-dropdown-1', 'value'),],
+    [Input('reset-button-1', 'n_clicks')]
+)
+def reset_all_filters(n_clicks):
+    start_date = None
+    end_date = None
+    genre_value = ['all']
+    subgenre_value = ['all']
+    artist_value = ['all']
+    return start_date, end_date, genre_value,subgenre_value,artist_value
 
+@app.callback(
+    [Output('date-picker-range-2', 'start_date'),
+     Output('date-picker-range-2', 'end_date'),
+     Output('genre-dropdown-2', 'value'),
+     Output('subgenre-dropdown-2', 'value'),
+     Output('artist-dropdown-2', 'value'),
+     Output('feature-dropdown','value'),],
+    [Input('reset-button-2', 'n_clicks')]
+)
+def reset_all_filters(n_clicks):
+    start_date = None
+    end_date = None
+    genre_value = ['all']
+    subgenre_value = ['all']
+    artist_value = ['all']
+    feature_value = ['all']
+    return start_date, end_date, genre_value,subgenre_value,artist_value,feature_value
 
 # Define callback to update charts
 
