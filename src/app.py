@@ -741,6 +741,7 @@ def update_decade_trend_line(n_clicks, start_date, end_date, selected_genres, se
                 ,axis=alt.Axis(labelColor='white', titleColor='white')),
         y=alt.Y('mean(track_popularity)',scale=alt.Scale(zero=False),title='Average Popularity',
                 axis=alt.Axis(labelColor='white', titleColor='white')),
+        tooltip = [alt.Tooltip('decade', title='Decade'), alt.Tooltip('mean(track_popularity)', title='Average Popularity', format='.2f')]
     ).properties(height=300, width=400)
     return chart.to_html()
 
@@ -764,10 +765,13 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
                 axis=alt.Axis(labelColor='white', titleColor='white')),
         y=alt.Y('count()',title='Count of Records',
                 axis=alt.Axis(labelColor='white', titleColor='white')),
-        color= alt.Color('nominal_popularity', legend=None)).properties(height=300,width=100).transform_filter(sel1).add_params(sel2)
+        color= alt.Color('nominal_popularity', legend=None),
+        tooltip = [alt.Tooltip('nominal_popularity', title='Popularity'), alt.Tooltip('count()', title='Count of Records')]
+        ).properties(height=300,width=100).transform_filter(sel1).add_params(sel2)
     chart2=alt.Chart(filtered_df).mark_arc().encode(
             color=alt.Color('playlist_genre',legend=alt.Legend(title=None,labelColor='white')),
-            theta='count()'
+            theta='count()',
+            tooltip = [alt.Tooltip('playlist_genre', title='Genre'), alt.Tooltip('count()', title='Count of Records')]
         ).properties(height=300,width=150).add_params(sel1).transform_filter(sel2)
     return (alt.hconcat(chart1, chart2).resolve_scale(color='independent')).to_html()
 
@@ -794,14 +798,16 @@ def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,select
         x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Popularity',
                 axis=alt.Axis(labelColor='white', titleColor='white')),
         y=alt.Y("track_name", sort='-x',title=None,
-                axis=alt.Axis(labelColor='white', titleColor='white')) # sort the x value in descent order
+                axis=alt.Axis(labelColor='white', titleColor='white')),
+        tooltip = [alt.Tooltip('track_name', title='Track Name'), alt.Tooltip('track_popularity', title='Popularity')]
     ).properties(title= alt.Title('Top 10 Songs',color='white'
                                   ))
     chart2 = alt.Chart(top10_artists).mark_bar(clip=True,color='darkgreen').encode(
         x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Average Popularity',
                 axis=alt.Axis(labelColor='white', titleColor='white')),
         y=alt.Y("track_artist", sort='-x',title=None,
-                axis=alt.Axis(labelColor='white', titleColor='white')) # sort the x value in descent order
+                axis=alt.Axis(labelColor='white', titleColor='white')),
+        tooltip = [alt.Tooltip('track_artist', title='Artist Name'), alt.Tooltip('track_popularity', title='Average Popularity')]
     ).properties(title= alt.Title('Top 10 Artists',color='white'
                                   ))
     return (chart1&chart2).to_html()
