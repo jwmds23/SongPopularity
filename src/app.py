@@ -841,13 +841,14 @@ def update_feature_scatter(n_clicks, select_year, f1, f2, start_date, end_date, 
             alt.value('grey'),
             title='Popularity',
             legend=alt.Legend(title=None,labelColor='white')),
-        tooltip = ['track_name', 'track_artist', 'track_album_name', 'track_popularity']
+        tooltip = [alt.Tooltip('track_name',title='Track Name'), alt.Tooltip('track_artist',title='Artist'), alt.Tooltip('track_album_name',title='Album Name'), alt.Tooltip('track_popularity',title='Popularity')]
     ).properties(height=300).add_params(brush).transform_filter(sel)
 
     graph1 = alt.Chart(df_new).mark_bar().encode(
     x = alt.X('count()',axis=alt.Axis(labelColor='white', titleColor='white')),
     y = alt.Y('playlist_genre', title=None,axis=alt.Axis(labelColor='white', titleColor='white')),
     color = alt.Color('playlist_genre',legend=None),
+    tooltip = [alt.Tooltip('playlist_genre',title='Genre'),alt.Tooltip('count()',title='Count of Records')]
     ).properties(height=100).add_params(
         sel
     ).transform_filter(
