@@ -795,7 +795,7 @@ def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,select
     popularity_min=top10_songs['track_popularity'].min()-5
     popularity_by_artists = df_new[['track_artist','track_popularity']].groupby('track_artist').mean('track_popularity').reset_index()
     top10_artists=popularity_by_artists.nlargest(10,"track_popularity")
-    popularity_min=top10_artists['track_popularity'].min()-5
+    artist_min=top10_artists['track_popularity'].min()-5
     chart1 = alt.Chart(top10_songs).mark_bar(clip=True,color='darkgreen').encode(
         x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Popularity',
                 axis=alt.Axis(labelColor='white', titleColor='white')),
@@ -805,7 +805,7 @@ def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,select
     ).properties(title= alt.Title('Top 10 Songs',color='white'
                                   ))
     chart2 = alt.Chart(top10_artists).mark_bar(clip=True,color='darkgreen').encode(
-        x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Average Popularity',
+        x=alt.X("track_popularity",scale=alt.Scale(domain=[artist_min,100]),title='Average Popularity',
                 axis=alt.Axis(labelColor='white', titleColor='white')),
         y=alt.Y("track_artist", sort='-x',title=None,
                 axis=alt.Axis(labelColor='white', titleColor='white')),
