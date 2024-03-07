@@ -761,18 +761,20 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
     sel1 = alt.selection_point(fields = ['playlist_genre'])
     sel2 = alt.selection_point(fields = ['nominal_popularity'])
     filtered_df_popularity_level = filtered_df[['playlist_genre','nominal_popularity','track_id']].groupby(['playlist_genre','nominal_popularity']).count().reset_index()
-    chart1=alt.Chart(filtered_df_popularity_level).mark_bar(color='darkred',opacity=0.7).encode(
-        x=alt.X('nominal_popularity',type='ordinal',title=None,sort=['low','medium','high']),
-        y=alt.Y('track_id',title='Count of Records'),
+    chart1=alt.Chart(filtered_df_popularity_level).mark_bar().encode(
+        x=alt.X('nominal_popularity',type='ordinal',title=None,
+                sort=['low','medium','high'],
+                axis=alt.Axis(labelColor='white', titleColor='white')),
+        y=alt.Y('track_id',title='Count of Records',
+                axis=alt.Axis(labelColor='white', titleColor='white')),
+        color= alt.Color('nominal_popularity', legend=None),
         tooltip = [alt.Tooltip('nominal_popularity', title='Popularity'), alt.Tooltip('track_id', title='Count of Records')]
-    ).properties(height=250,width=100,title='Popularity Distribution'
-    ).transform_filter(sel1).add_params(sel2)
+        ).properties(height=300,width=100).transform_filter(sel1).add_params(sel2)
     chart2=alt.Chart(filtered_df_popularity_level).mark_arc().encode(
-            color=alt.Color('playlist_genre',legend=alt.Legend(title=None)),
-            theta='count()',
+            color=alt.Color('playlist_genre',legend=alt.Legend(title=None,labelColor='white')),
+            theta='track_id',
             tooltip = [alt.Tooltip('playlist_genre', title='Genre'), alt.Tooltip('track_id', title='Count of Records')]
-        ).properties(height=250,width=200,title='Genre Distribution'
-        ).add_params(sel1).transform_filter(sel2)
+        ).properties(height=300,width=150).add_params(sel1).transform_filter(sel2)
     return (alt.hconcat(chart1, chart2).resolve_scale(color='independent')).to_html()
 
 
