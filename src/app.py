@@ -736,7 +736,8 @@ def update_output(n_clicks, start_date, end_date, selected_genres, selected_subg
 )
 def update_decade_trend_line(n_clicks, start_date, end_date, selected_genres, selected_subgenres, selected_artists):
     filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
-    chart=alt.Chart(filtered_df).mark_line(color='darkgreen',strokeWidth=5).encode(
+    filtered_df_trend = filtered_df[['decade','track_popularity']].groupby('decade').mean().reset_index()
+    chart=alt.Chart(filtered_df_trend).mark_line(color='darkgreen',strokeWidth=5).encode(
         x=alt.X('decade',type='ordinal',title=None
                 ,axis=alt.Axis(labelColor='white', titleColor='white')),
         y=alt.Y('mean(track_popularity)',scale=alt.Scale(zero=False),title='Average Popularity',
@@ -759,20 +760,19 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
     filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
     sel1 = alt.selection_point(fields = ['playlist_genre'])
     sel2 = alt.selection_point(fields = ['nominal_popularity'])
-    chart1=alt.Chart(filtered_df).mark_bar().encode(
-        x=alt.X('nominal_popularity',type='ordinal',title=None,
-                sort=['low','medium','high'],
-                axis=alt.Axis(labelColor='white', titleColor='white')),
-        y=alt.Y('count()',title='Count of Records',
-                axis=alt.Axis(labelColor='white', titleColor='white')),
-        color= alt.Color('nominal_popularity', legend=None),
-        tooltip = [alt.Tooltip('nominal_popularity', title='Popularity'), alt.Tooltip('count()', title='Count of Records')]
-        ).properties(height=300,width=100).transform_filter(sel1).add_params(sel2)
-    chart2=alt.Chart(filtered_df).mark_arc().encode(
-            color=alt.Color('playlist_genre',legend=alt.Legend(title=None,labelColor='white')),
+    filtered_df_popularity_level = filtered_df[['playlist_genre','nominal_popularity','track_id']].groupby(['playlist_genre','nominal_popularity']).count().reset_index()
+    chart1=alt.Chart(filtered_df_popularity_level).mark_bar(color='darkred',opacity=0.7).encode(
+        x=alt.X('nominal_popularity',type='ordinal',title=None,sort=['low','medium','high']),
+        y=alt.Y('track_id',title='Count of Records'),
+        tooltip = [alt.Tooltip('nominal_popularity', title='Popularity'), alt.Tooltip('track_id', title='Count of Records')]
+    ).properties(height=250,width=100,title='Popularity Distribution'
+    ).transform_filter(sel1).add_params(sel2)
+    chart2=alt.Chart(filtered_df_popularity_level).mark_arc().encode(
+            color=alt.Color('playlist_genre',legend=alt.Legend(title=None)),
             theta='count()',
-            tooltip = [alt.Tooltip('playlist_genre', title='Genre'), alt.Tooltip('count()', title='Count of Records')]
-        ).properties(height=300,width=150).add_params(sel1).transform_filter(sel2)
+            tooltip = [alt.Tooltip('playlist_genre', title='Genre'), alt.Tooltip('track_id', title='Count of Records')]
+        ).properties(height=250,width=200,title='Genre Distribution'
+        ).add_params(sel1).transform_filter(sel2)
     return (alt.hconcat(chart1, chart2).resolve_scale(color='independent')).to_html()
 
 
