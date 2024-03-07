@@ -765,15 +765,15 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
         x=alt.X('nominal_popularity',type='ordinal',title=None,
                 sort=['low','medium','high'],
                 axis=alt.Axis(labelColor='white', titleColor='white')),
-        y=alt.Y('track_id',title='Count of Records',
+        y=alt.Y('sum(track_id)',title='Count of Records',
                 axis=alt.Axis(labelColor='white', titleColor='white')),
         color= alt.Color('nominal_popularity', legend=None),
-        tooltip = [alt.Tooltip('nominal_popularity', title='Popularity'), alt.Tooltip('track_id', title='Count of Records')]
+        tooltip = [alt.Tooltip('nominal_popularity', title='Popularity'), alt.Tooltip('sum(track_id)', title='Count of Records')]
         ).properties(height=300,width=100).transform_filter(sel1).add_params(sel2)
     chart2=alt.Chart(filtered_df_popularity_level).mark_arc().encode(
             color=alt.Color('playlist_genre',legend=alt.Legend(title=None,labelColor='white')),
-            theta='track_id',
-            tooltip = [alt.Tooltip('playlist_genre', title='Genre'), alt.Tooltip('track_id', title='Count of Records')]
+            theta='sum(track_id)',
+            tooltip = [alt.Tooltip('playlist_genre', title='Genre'), alt.Tooltip('sum(track_id)', title='Count of Records')]
         ).properties(height=300,width=150).add_params(sel1).transform_filter(sel2)
     return (alt.hconcat(chart1, chart2).resolve_scale(color='independent')).to_html()
 
