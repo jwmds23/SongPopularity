@@ -573,7 +573,7 @@ tab3 =  html.Div(id='tab-3-content', children=[
                 dbc.Col([]),
                 dbc.Col([])]),
         ])
-        ]),
+        ], width='6'),
         dbc.Col([
         dbc.Container([
             dbc.Col([
@@ -582,7 +582,7 @@ tab3 =  html.Div(id='tab-3-content', children=[
                 html.Iframe(id='pred-result',width=400,height=350)], style={'margin': '0 auto -1% 15%', 'margin-left': '23%'}),
                 dbc.Row([
                 dcc.Graph(id='pred-radar', style={'margin': '0 auto', 'width':'600px', 'height':'420px', 'margin-top': '-10%'})])
-            ], style={'align':'center'})
+            ], style={'align':'center'}, width='12')
         ])
     ])
 ])])
