@@ -34,7 +34,7 @@ app.config.suppress_callback_exceptions = True
 def transparent_bg():
     d = {
         'config': {
-            'background':'none',
+            'background':'#191A19',
             'view': {
                 'height': 300,
                 'width': 300,
@@ -334,9 +334,9 @@ tab3 =  html.Div(id='tab-3-content', children=[
             html.H3('Set Features for Your Song'),
             dbc.Row([
                 dbc.Col([html.Img(src='assets/dance.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                dbc.Col([html.Label('Danceability', style={'margin-left': '-130px'})]),
+                dbc.Col([html.Label('Danceability', style={'margin-left': '-90%', 'margin-top': '1%'})]),
                 dbc.Col([html.Img(src='assets/energy.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                dbc.Col([html.Label('Energy', style={'margin-left': '-130px'})])
+                dbc.Col([html.Label('Energy', style={'margin-left': '-90%', 'margin-top': '1%'})])
             ], style={'border-top': '3px solid lightgrey', 'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px', 'border-top-left-radius':'10px', 'border-top-right-radius':'10px'}),
             dbc.Row([
                 dbc.Col([
@@ -345,11 +345,11 @@ tab3 =  html.Div(id='tab-3-content', children=[
                             id='danceability',
                             min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
                             updatemode='drag'
-                        )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'}),
+                        )], style={'margin-left': '-5.2%', 'margin-top': '-5.8%', 'width': '120%'}),
                 ], width=5),
                 dbc.Col([
                     html.Div(id='danceability-output')],
-                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    style={'margin-top': '-3.2%', 'margin-left': '-0.8%'},
                     width=1),
                 dbc.Col([
                     html.Div([
@@ -357,19 +357,19 @@ tab3 =  html.Div(id='tab-3-content', children=[
                             id='energy',
                             min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
                             updatemode='drag'
-                        )],  style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                        )],  style={'margin-left': '-5.5%', 'margin-top': '-5.8%', 'width': '120%'})
                 ]),
                 dbc.Col([
                     html.Div(id='energy-output')],
-                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    style={'margin-top': '-3.2%', 'margin-left': '-0.8%'},
                     width=1),
                 html.Br()
             ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
             dbc.Row([
                 dbc.Col([html.Img(src='assets/speech.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                dbc.Col([html.Label('Speechiness', style={'margin-left': '-130px'})]),
+                dbc.Col([html.Label('Speechiness', style={'margin-left': '-90%', 'margin-top': '1%'})]),
                 dbc.Col([html.Img(src='assets/acoustic.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                dbc.Col([html.Label('Acousticness', style={'margin-left': '-130px'})])
+                dbc.Col([html.Label('Acousticness', style={'margin-left': '-90%', 'margin-top': '1%'})])
             ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
             dbc.Row([
                 dbc.Col([
@@ -378,11 +378,11 @@ tab3 =  html.Div(id='tab-3-content', children=[
                             id='speechiness',
                             min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
                             updatemode='drag'
-                        )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                        )], style={'margin-left': '-5.2%', 'margin-top': '-5.8%', 'width': '120%'})
                 ], width=5),
                 dbc.Col([
                     html.Div(id='speechiness-output')],
-                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    style={'margin-top': '-3.2%', 'margin-left': '-0.8%'},
                     width=1),
                 dbc.Col([
                     html.Div([
@@ -390,19 +390,19 @@ tab3 =  html.Div(id='tab-3-content', children=[
                             id='acousticness',
                             min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
                             updatemode='drag'
-                        )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                        )], style={'margin-left': '-5.5%', 'margin-top': '-5.8%', 'width': '120%'})
                 ]),
                 dbc.Col([
                     html.Div(id='acousticness-output')],
-                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    style={'margin-top': '-3.2%', 'margin-left': '-0.8%'},
                     width=1),
                 html.Br()
             ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
             dbc.Row([
                 dbc.Col([html.Img(src='assets/instrumental.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                dbc.Col([html.Label('Instrumentalness', style={'margin-left': '-130px'})]),
+                dbc.Col([html.Label('Instrumentalness', style={'margin-left': '-90%', 'margin-top': '1%'})]),
                 dbc.Col([html.Img(src='assets/liveness.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                dbc.Col([html.Label('Liveness', style={'margin-left': '-130px'})])
+                dbc.Col([html.Label('Liveness', style={'margin-left': '-90%', 'margin-top': '1%'})])
             ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
             dbc.Row([
                 dbc.Col([
@@ -411,11 +411,11 @@ tab3 =  html.Div(id='tab-3-content', children=[
                             id='instrumentalness',
                             min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
                             updatemode='drag'
-                        )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                        )], style={'margin-left': '-5.2%', 'margin-top': '-5.8%', 'width': '120%'})
                     ], width=5),
                 dbc.Col([
                     html.Div(id='instrumentalness-output')],
-                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    style={'margin-top': '-3.2%', 'margin-left': '-0.8%'},
                     width=1),
                 dbc.Col([
                         html.Div([
@@ -423,19 +423,19 @@ tab3 =  html.Div(id='tab-3-content', children=[
                                 id='liveness',
                                 min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
                                 updatemode='drag'
-                            )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                            )], style={'margin-left': '-5.5%', 'margin-top': '-5.8%', 'width': '120%'})
                     ]),
                 dbc.Col([
                     html.Div(id='liveness-output')],
-                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    style={'margin-top': '-3.2%', 'margin-left': '-0.8%'},
                     width=1),
                 html.Br()
                 ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
             dbc.Row([
                 dbc.Col([html.Img(src='assets/valence.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                dbc.Col([html.Label('Valence', style={'margin-left': '-130px'})]),
+                dbc.Col([html.Label('Valence', style={'margin-left': '-90%', 'margin-top': '1%'})]),
                 dbc.Col([html.Img(src='assets/loudness.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                dbc.Col([html.Label('Loudness', style={'margin-left': '-130px'})])
+                dbc.Col([html.Label('Loudness', style={'margin-left': '-90%', 'margin-top': '1%'})])
             ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
             dbc.Row([
                 dbc.Col([
@@ -444,11 +444,11 @@ tab3 =  html.Div(id='tab-3-content', children=[
                             id='valence',
                             min=0, max=1, value=0, marks={0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1.0: '1'},
                             updatemode='drag')
-                    ], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                    ], style={'margin-left': '-5.2%', 'margin-top': '-5.8%', 'width': '120%'})
                 ], width=5),
                 dbc.Col([
                     html.Div(id='valence-output')],
-                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    style={'margin-top': '-3.2%', 'margin-left': '-0.8%'},
                     width=1),
                 dbc.Col([
                     html.Div([
@@ -456,19 +456,19 @@ tab3 =  html.Div(id='tab-3-content', children=[
                             id='loudness',
                             min=-47, max=1.5, value=-47, marks={-47: '-47', -40: '-40', -30: '-30', -20: '-20', -10: '-10', 1.5: '1.5'},
                             updatemode='drag'
-                        )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                        )], style={'margin-left': '-5.5%', 'margin-top': '-5.8%', 'width': '120%'})
                 ]),
                 dbc.Col([
                     html.Div(id='loudness-output')],
-                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    style={'margin-top': '-3.2%', 'margin-left': '-0.8%'},
                     width=1),
                 html.Br()
             ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
             dbc.Row([
                 dbc.Col([html.Img(src='assets/tempo.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                dbc.Col([html.Label('Tempo', style={'margin-left': '-130px'})]),
+                dbc.Col([html.Label('Tempo', style={'margin-left': '-90%', 'margin-top': '1%'})]),
                 dbc.Col([html.Img(src='assets/mode.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                dbc.Col([html.Label('Mode', style={'margin-left': '-130px'})])
+                dbc.Col([html.Label('Mode', style={'margin-left': '-90%', 'margin-top': '1%'})])
             ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
             dbc.Row([
                 dbc.Col([
@@ -477,11 +477,11 @@ tab3 =  html.Div(id='tab-3-content', children=[
                                 id='tempo',
                                 min=0, max=240, value=0, marks={0: '0', 30: '30', 60: '60', 90: '90', 120: '120', 150: '150', 180: '180', 210: '210', 240: '240'},
                                 updatemode='drag'
-                            )], style={'margin-left': '-15px', 'margin-top': '-15px', 'width': '120%'})
+                            )], style={'margin-left': '-5.2%', 'margin-top': '-5.8%', 'width': '120%'})
                     ], width=5),
                 dbc.Col([
                     html.Div(id='tempo-output')],
-                    style={'margin-left': '-5px', 'margin-top': '-20px'},
+                    style={'margin-top': '-3.2%', 'margin-left': '-0.8%'},
                     width=1),
                 dbc.Col([
                     html.Div([  
@@ -491,16 +491,16 @@ tab3 =  html.Div(id='tab-3-content', children=[
                             multi=False,
                             clearable=True,
                             style = {'color': '#16E536'}
-                        )], style={'margin-top': '-20px', 'width': '100%'}
+                        )], style={'margin-top': '-6.5%', 'margin-left': '0%', 'width': '101%'}
                     )
                 ]),
                 html.Br()
             ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
             dbc.Row([
                 dbc.Col([html.Img(src='assets/genre.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                dbc.Col([html.Label('Genre', style={'margin-left': '-130px'})]),
+                dbc.Col([html.Label('Genre', style={'margin-left': '-90%', 'margin-top': '1%'})]),
                 dbc.Col([html.Img(src='assets/key.png', style={'width': '25px', 'height': '25px', 'background-color':'transparent'})]),
-                dbc.Col([html.Label('Key', style={'margin-left': '-130px'})])
+                dbc.Col([html.Label('Key', style={'margin-left': '-90%', 'margin-top': '1%'})])
             ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
             dbc.Row([
                 dbc.Col([
@@ -519,7 +519,7 @@ tab3 =  html.Div(id='tab-3-content', children=[
                             clearable=True,
                             searchable=True,
                             style={'color': '#16E536'})
-                    ], style={'margin-top': '-20px', 'width': '100%'})
+                    ], style={'margin-top': '-6.5%', 'width': '100%'})
                 ]),
                 dbc.Col([
                     html.Div([
@@ -529,7 +529,7 @@ tab3 =  html.Div(id='tab-3-content', children=[
                             multi=False,
                             clearable=True,
                             style={'color': '#16E536'}
-                    )], style={'margin-top': '-20px', 'margin-left': '-5px', 'width': '102%'})
+                    )], style={'margin-top': '-6.5%', 'margin-left': '-1%', 'width': '102%'})
                 ]),
                 html.Br()
             ], style={'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px'}),
@@ -545,7 +545,7 @@ tab3 =  html.Div(id='tab-3-content', children=[
                             style={'border': '2px solid rgb(26, 24, 24)', 'border-radius': '10px', 'background-color': 'rgb(26, 24, 24)', 'color': '#16E536'})
                         ])
                 ]),
-                dbc.Col([html.Label('minutes')], style={'margin-left': '-10px'}),
+                dbc.Col([html.Label('minutes')], style={'margin-left': '-1.5%'}),
                 dbc.Col([
                     html.Div([
                         dcc.Input(
@@ -557,7 +557,7 @@ tab3 =  html.Div(id='tab-3-content', children=[
                             style={'border': '2px solid rgb(26, 24, 24)', 'border-radius': '10px', 'background-color': 'rgb(26, 24, 24)', 'color': '#16E536'})
                     ])
                 ]),
-                dbc.Col([html.Label('seconds')], style={'margin-left': '-10px', 'color': '#16E536'})
+                dbc.Col([html.Label('seconds')], style={'margin-left': '-1.5%', 'color': '#16E536'})
             ],style={'border-bottom': '3px solid lightgrey', 'border-left':'3px solid lightgrey', 'border-right':'3px solid lightgrey', 'padding': '10px', 'border-bottom-left-radius':'10px', 'border-bottom-right-radius':'10px'}),
             html.Br(),
             dbc.Row([
@@ -579,9 +579,9 @@ tab3 =  html.Div(id='tab-3-content', children=[
             dbc.Col([
                 html.H3('The Predicted Popularity'),
                 dbc.Row([
-                html.Iframe(id='pred-result',width=400,height=350)], style={'margin': '0 auto -7px 140px', 'margin-left': '160px'}),
+                html.Iframe(id='pred-result',width=400,height=350)], style={'margin': '0 auto -1% 15%', 'margin-left': '23%'}),
                 dbc.Row([
-                dcc.Graph(id='pred-radar', style={'margin': '0 auto', 'width':'600px', 'height':'420px', 'margin-top': '-50px'})])
+                dcc.Graph(id='pred-radar', style={'margin': '0 auto', 'width':'600px', 'height':'420px', 'margin-top': '-10%'})])
             ], style={'align':'center'})
         ])
     ])
@@ -592,7 +592,7 @@ tabs =  dcc.Tabs([
                 selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 24},
                 value='tab-1'
         ),
-        dcc.Tab(label='By Feature', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '0px', 'fontSize': 24, 'white-space': 'nowrap'}, 
+        dcc.Tab(label='Explore', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '0px', 'fontSize': 24, 'white-space': 'nowrap'}, 
                 selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 24, 'white-space': 'nowrap'},
                 value='tab-2'
         ),   
@@ -735,6 +735,7 @@ def update_output(n_clicks, start_date, end_date, selected_genres, selected_subg
      State('artist-dropdown-1', 'value')]
 )
 def update_decade_trend_line(n_clicks, start_date, end_date, selected_genres, selected_subgenres, selected_artists):
+    alt.themes.enable('grey_bg')
     filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
     filtered_df_trend = filtered_df[['decade','track_popularity']].groupby('decade').mean().reset_index()
     chart=alt.Chart(filtered_df_trend).mark_line(color='darkgreen',strokeWidth=5).encode(
@@ -757,6 +758,7 @@ def update_decade_trend_line(n_clicks, start_date, end_date, selected_genres, se
      State('artist-dropdown-1', 'value')]
 )
 def update_popularity_level_distribution(n_clicks, start_date, end_date, selected_genres, selected_subgenres, selected_artists):
+    alt.themes.enable('grey_bg')
     filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
     sel1 = alt.selection_point(fields = ['playlist_genre'])
     sel2 = alt.selection_point(fields = ['nominal_popularity'])
@@ -828,8 +830,9 @@ def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,select
      State('artist-dropdown-1', 'value')]   
 )
 def update_feature_scatter(n_clicks, select_year, f1, f2, start_date, end_date, selected_genres, selected_subgenres, selected_artists):
+    alt.themes.enable('grey_bg')
     filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
-    df_new = filtered_df[filtered_df['track_album_release_date'].dt.year == select_year]
+    df_new = filtered_df[filtered_df['track_album_release_date'].dt.year == select_year][['track_name', 'track_artist', 'track_album_name', 'track_popularity', 'playlist_genre', 'nominal_popularity', f1, f2]]
     brush = alt.selection_interval()
     sel = alt.selection_point(fields=['playlist_genre'])
     graph = alt.Chart(df_new).mark_circle().encode(
