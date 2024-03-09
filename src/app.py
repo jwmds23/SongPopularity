@@ -8,15 +8,16 @@ import json
 import pandas as pd
 import numpy as np
 import datetime
+import requests
 from datetime import datetime as dt
 import altair as alt
 import dash
 import plotly.graph_objs as go
-from dash import dcc, html, Input, Output,State
+from dash import dcc, html, Input, Output, State, dash_table
 import dash_bootstrap_components as dbc
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from helper import handle_select_all, create_feature_distribution_charts, pred_chart, track_radar, pop_predict
+from helper import handle_select_all, create_feature_distribution_charts, pred_chart, track_radar, pop_predict, music_play
 alt.data_transformers.disable_max_rows()
 # alt.data_transformers.enable("vegafusion")
 
@@ -189,11 +190,58 @@ tab1 =  html.Div(id='tab-1-content', children=[
                 html.Div(
                     id="top-10-popularity-songs-artists-chart",
                     children=[
-                        html.H4("Top 10 Popularity Songs & Artists"),
-                        html.Iframe(
-                            id="top-10-popularity-songs-artists-chart-iframe",
-                            style={'border-width': '0', 'width': '100%', 'height': '1000px'},
-                        ),
+                        html.H4("Top 10 Popularity Songs"),
+                        dash_table.DataTable(
+                            id = 'top-10-songs',
+                            columns=[
+                                {"name": "Rank", "id": "rank"},
+                                {"name": "Song", "id": "track_name"},
+                                {"name": "Artist", "id": "track_artist"},
+                                {"name": "Popularity", "id": "track_popularity"},
+                                {'name': 'Track ID', 'id': 'track_id'}
+                            ],
+                            hidden_columns=['track_id'],
+                            style_cell_conditional=[
+                                {'if': {'column_id': 'track_name'}, 'textAlign': 'center', 'cursor': 'pointer'},
+                            ],
+                            style_data_conditional=[
+                                # Odd rows
+                                {
+                                    'if': {'row_index': 'odd'},
+                                    'backgroundColor': '#464545'
+                                },
+                                # Even rows
+                                {
+                                    'if': {'row_index': 'even'},
+                                    'backgroundColor': '#111111'
+                                },
+                                {
+                                    'if': {'state': 'selected'}, 
+                                    'backgroundColor': '#096C01', 
+                                    'border': '1px solid green'}
+                            ],
+                            style_table={
+                                'border': '0px'
+                            },
+                            export_format='none',
+                            style_cell={
+                                'textAlign': 'center',
+                                'fontFamily': "Nunito",
+                                'border': '0px',
+                                'color': 'white'
+                            },
+                            style_header={
+                                'fontWeight': 'bold',
+                                'fontFamily': "Nunito",
+                                'border': '0px',
+                                'background-color': '#888A87',
+                                'color': 'white'
+                            }),
+                        html.Div(id='redirect-instructions', children=
+                            [html.A(
+                                [html.Img(src='assets/play.png', style={'height': '25px', 'width': '25px', 'margin-top': '-1%'}),
+                                "Listen On Spotify"]
+                                , id='song-link', style={'color': 'rgb(4, 184, 4)'})])
                     ],
                 ),                    
                 ],width="4"),
@@ -781,7 +829,7 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
 
 
 @app.callback(
-    Output('top-10-popularity-songs-artists-chart-iframe', 'srcDoc'),
+    Output('top-10-songs', 'data'),
     [Input('apply-button-1', 'n_clicks')],
     [State('date-picker-range-1', 'start_date'),
      State('date-picker-range-1', 'end_date'),
@@ -791,30 +839,38 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
 )
 def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,selected_genres, selected_subgenres, selected_artists):
     filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
-    df_new=filtered_df[['track_name','track_artist','track_popularity']].drop_duplicates()
-    popularity_by_songs = df_new[['track_name','track_popularity']].groupby('track_name').mean('track_popularity').reset_index()
-    top10_songs=popularity_by_songs.nlargest(10,"track_popularity")
-    popularity_min=top10_songs['track_popularity'].min()-5
-    popularity_by_artists = df_new[['track_artist','track_popularity']].groupby('track_artist').mean('track_popularity').reset_index()
-    top10_artists=popularity_by_artists.nlargest(10,"track_popularity")
-    artist_min=top10_artists['track_popularity'].min()-5
-    chart1 = alt.Chart(top10_songs).mark_bar(clip=True,color='darkgreen').encode(
-        x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Popularity',
-                axis=alt.Axis(labelColor='white', titleColor='white')),
-        y=alt.Y("track_name", sort='-x',title=None,
-                axis=alt.Axis(labelColor='white', titleColor='white')),
-        tooltip = [alt.Tooltip('track_name', title='Track Name'), alt.Tooltip('track_popularity', title='Popularity')]
-    ).properties(title= alt.Title('Top 10 Songs',color='white'
-                                  ))
-    chart2 = alt.Chart(top10_artists).mark_bar(clip=True,color='darkgreen').encode(
-        x=alt.X("track_popularity",scale=alt.Scale(domain=[artist_min,100]),title='Average Popularity',
-                axis=alt.Axis(labelColor='white', titleColor='white')),
-        y=alt.Y("track_artist", sort='-x',title=None,
-                axis=alt.Axis(labelColor='white', titleColor='white')),
-        tooltip = [alt.Tooltip('track_artist', title='Artist Name'), alt.Tooltip('track_popularity', title='Average Popularity')]
-    ).properties(title= alt.Title('Top 10 Artists',color='white'
-                                  ))
-    return (chart1&chart2).to_html()
+    df_new=filtered_df[['track_id','track_name','track_artist','track_popularity']].drop_duplicates()
+    popularity_by_songs = df_new.groupby('track_name').agg({
+        'track_popularity': 'mean',
+        'track_artist': 'max',
+        'track_id': 'max'
+    }).reset_index()
+    top10_songs = popularity_by_songs.nlargest(10,"track_popularity")
+    top10_songs['rank'] = [i for i in range(1, 11)]
+    # df_new=filtered_df[['track_name','track_artist','track_popularity']].drop_duplicates()
+    # popularity_by_songs = df_new[['track_name','track_popularity']].groupby('track_name').mean('track_popularity').reset_index()
+    # top10_songs=popularity_by_songs.nlargest(10,"track_popularity")
+    # popularity_min=top10_songs['track_popularity'].min()-5
+    # popularity_by_artists = df_new[['track_artist','track_popularity']].groupby('track_artist').mean('track_popularity').reset_index()
+    # top10_artists=popularity_by_artists.nlargest(10,"track_popularity")
+    # artist_min=top10_artists['track_popularity'].min()-5
+    # chart1 = alt.Chart(top10_songs).mark_bar(clip=True,color='darkgreen').encode(
+    #     x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Popularity',
+    #             axis=alt.Axis(labelColor='white', titleColor='white')),
+    #     y=alt.Y("track_name", sort='-x',title=None,
+    #             axis=alt.Axis(labelColor='white', titleColor='white')),
+    #     tooltip = [alt.Tooltip('track_name', title='Track Name'), alt.Tooltip('track_popularity', title='Popularity')]
+    # ).properties(title= alt.Title('Top 10 Songs',color='white'
+    #                               ))
+    # chart2 = alt.Chart(top10_artists).mark_bar(clip=True,color='darkgreen').encode(
+    #     x=alt.X("track_popularity",scale=alt.Scale(domain=[artist_min,100]),title='Average Popularity',
+    #             axis=alt.Axis(labelColor='white', titleColor='white')),
+    #     y=alt.Y("track_artist", sort='-x',title=None,
+    #             axis=alt.Axis(labelColor='white', titleColor='white')),
+    #     tooltip = [alt.Tooltip('track_artist', title='Artist Name'), alt.Tooltip('track_popularity', title='Average Popularity')]
+    # ).properties(title= alt.Title('Top 10 Artists',color='white'
+                                #   ))
+    return top10_songs.to_dict('records')
 
 
 @app.callback(
@@ -998,6 +1054,22 @@ def render_tab_content(tab):
         return tab3
     else:
         return tab1
+    
+@app.callback(
+    Output('song-link', 'href'),
+    Input('top-10-songs', 'active_cell'),
+    State('top-10-songs', 'data')
+)
+def update_audio_link(active_cell, rows):
+    if active_cell:
+        try:
+            track_id = rows[active_cell['row']]['track_id']
+            preview_url = music_play(track_id)
+        except Exception as e:
+            print(f"Error updating audio link: {e}")
+            return ""
+        return preview_url
+    return ""
 
 if __name__ == "__main__":
     app.run_server(debug=True)

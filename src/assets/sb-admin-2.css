@@ -417,3 +417,7 @@ select {
 .Select-value-label, .Select-option {
   color: #16E536 !important; /* This sets the text color for both selected value and options */
 }
+
+.dash-spreadsheet-menu-item {
+  display: none !important;
+}

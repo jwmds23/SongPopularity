@@ -6,6 +6,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import pandas as pd
 import numpy as np
 import altair as alt
+import requests
 import plotly.graph_objs as go
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.ensemble import RandomForestRegressor
@@ -197,3 +198,29 @@ def create_feature_distribution_charts(df, selected_features):
     )
     
     return combined_chart.to_html()
+
+def music_play(track_id):
+    client_id = os.getenv('SPOTIFY_CLIENT_ID')
+    client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
+
+    auth_response = requests.post('https://accounts.spotify.com/api/token', {
+        'grant_type': 'client_credentials',
+        'client_id': client_id,
+        'client_secret': client_secret,
+    })
+
+    # Convert the response to JSON
+    auth_response_data = auth_response.json()
+
+    # Save the access token
+    access_token = auth_response_data['access_token']
+
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+    }
+
+    response = requests.get(f'https://api.spotify.com/v1/tracks/{track_id}', headers=headers)
+
+    track_details = response.json()
+
+    return track_details['external_urls']['spotify']
