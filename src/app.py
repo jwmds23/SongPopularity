@@ -190,7 +190,7 @@ tab1 =  html.Div(id='tab-1-content', children=[
                 html.Div(
                     id="top-10-popularity-songs-artists-chart",
                     children=[
-                        html.H4("Top 10 Popularity Songs"),
+                        html.H4("Top 10 Popular Songs"),
                         dash_table.DataTable(
                             id = 'top-10-songs',
                             columns=[
@@ -201,9 +201,6 @@ tab1 =  html.Div(id='tab-1-content', children=[
                                 {'name': 'Track ID', 'id': 'track_id'}
                             ],
                             hidden_columns=['track_id'],
-                            style_cell_conditional=[
-                                {'if': {'column_id': 'track_name'}, 'textAlign': 'center', 'cursor': 'pointer'},
-                            ],
                             style_data_conditional=[
                                 # Odd rows
                                 {
@@ -240,7 +237,7 @@ tab1 =  html.Div(id='tab-1-content', children=[
                         html.Div(id='redirect-instructions', children=
                             [html.A(
                                 [html.Img(src='assets/play.png', style={'height': '25px', 'width': '25px', 'margin-top': '-1%'}),
-                                "Listen On Spotify"]
+                                "Listen To the Music On Spotify"]
                                 , id='song-link', style={'color': 'rgb(4, 184, 4)'})])
                     ],
                 ),                    
@@ -257,50 +254,92 @@ tab1 =  html.Div(id='tab-1-content', children=[
                         ),
                     ],
                     ),
-                html.Div(
-                    id="feature_scatter-chart",
-                    children=[
-                        html.H4("Two-Feature Scatter Plot"),
-                        "Release Year",
-                        dbc.Row([
-                            dbc.Col([
-                                dcc.Slider(id='year-slider', 
-                                    min=1957, max=2021, 
-                                    value=2000,
-                                    marks={1960: '1960', 1970: '1970', 1980: '1980', 1990: '1990', 2000: '2000', 2010: '2010'},
-                                    updatemode='drag',
-                                    step=1),
-                                ], width=9),
-                            dbc.Col([
-                                html.Div(id='year-output')],
-                                style={'margin-left': '-30px', 'margin-top': '-5px'},
-                                width=1)]),
-                        dbc.Row([
-                            dbc.Col([
-                                "Feature 1",
-                                dcc.Dropdown(
-                                        id='feature1-dropdown',
-                                        options=[{'label': feature, 'value': feature} for feature in feature_list],
-                                        value='danceability',
-                                        multi=False,
-                                        style={'width': '200px','backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'} 
-                                    ),]),
-                            dbc.Col([
-                                "Feature 2",
-                                dcc.Dropdown(
-                                        id='feature2-dropdown',
-                                        options=[{'label': feature, 'value': feature} for feature in feature_list],
-                                        value='liveness',
-                                        multi=False,
-                                        style={'width': '200px','backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
-                                    ),]),
-                        ]),
-                        html.Iframe(
-                            id="feature_scatter-chart-iframe",
-                            style={'border-width': '0', 'width': '100%', 'height': '800px'},
-                        ),     
-                    ],
-                ),
+                html.Div(children=[
+                    html.H4("Top 10 Popular Artists"),
+                        dash_table.DataTable(
+                            id = 'top-10-artists',
+                            columns=[
+                                {"name": "Rank", "id": "rank"},
+                                {"name": "Artist", "id": "track_artist"},
+                                {"name": "Popularity", "id": "track_popularity"}
+                            ],
+                            style_data_conditional=[
+                                # Odd rows
+                                {
+                                    'if': {'row_index': 'odd'},
+                                    'backgroundColor': '#464545'
+                                },
+                                # Even rows
+                                {
+                                    'if': {'row_index': 'even'},
+                                    'backgroundColor': '#111111'
+                                },
+                                {
+                                    'if': {'state': 'selected'}, 
+                                    'backgroundColor': '#096C01', 
+                                    'border': '1px solid green'}
+                            ],
+                            style_table={
+                                'border': '0px'
+                            },
+                            export_format='none',
+                            style_cell={
+                                'textAlign': 'center',
+                                'fontFamily': "Nunito",
+                                'border': '0px',
+                                'color': 'white'
+                            },
+                            style_header={
+                                'fontWeight': 'bold',
+                                'fontFamily': "Nunito",
+                                'border': '0px',
+                                'background-color': '#888A87',
+                                'color': 'white'
+                            },
+                            row_selectable=None)
+                    # id="feature_scatter-chart",
+                    # children=[
+                    #     html.H4("Two-Feature Scatter Plot"),
+                    #     "Release Year",
+                    #     dbc.Row([
+                    #         dbc.Col([
+                    #             dcc.Slider(id='year-slider', 
+                    #                 min=1957, max=2021, 
+                    #                 value=2000,
+                    #                 marks={1960: '1960', 1970: '1970', 1980: '1980', 1990: '1990', 2000: '2000', 2010: '2010'},
+                    #                 updatemode='drag',
+                    #                 step=1),
+                    #             ], width=9),
+                    #         dbc.Col([
+                    #             html.Div(id='year-output')],
+                    #             style={'margin-left': '-30px', 'margin-top': '-5px'},
+                    #             width=1)]),
+                    #     dbc.Row([
+                    #         dbc.Col([
+                    #             "Feature 1",
+                    #             dcc.Dropdown(
+                    #                     id='feature1-dropdown',
+                    #                     options=[{'label': feature, 'value': feature} for feature in feature_list],
+                    #                     value='danceability',
+                    #                     multi=False,
+                    #                     style={'width': '200px','backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'} 
+                    #                 ),]),
+                    #         dbc.Col([
+                    #             "Feature 2",
+                    #             dcc.Dropdown(
+                    #                     id='feature2-dropdown',
+                    #                     options=[{'label': feature, 'value': feature} for feature in feature_list],
+                    #                     value='liveness',
+                    #                     multi=False,
+                    #                     style={'width': '200px','backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
+                    #                 ),]),
+                    #     ]),
+                    #     html.Iframe(
+                    #         id="feature_scatter-chart-iframe",
+                    #         style={'border-width': '0', 'width': '100%', 'height': '800px'},
+                    #     ),     
+                    # ],
+            ]),
                 ],width="4")]
             )])
 
@@ -847,31 +886,25 @@ def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,select
     }).reset_index()
     top10_songs = popularity_by_songs.nlargest(10,"track_popularity")
     top10_songs['rank'] = [i for i in range(1, 11)]
-    # df_new=filtered_df[['track_name','track_artist','track_popularity']].drop_duplicates()
-    # popularity_by_songs = df_new[['track_name','track_popularity']].groupby('track_name').mean('track_popularity').reset_index()
-    # top10_songs=popularity_by_songs.nlargest(10,"track_popularity")
-    # popularity_min=top10_songs['track_popularity'].min()-5
-    # popularity_by_artists = df_new[['track_artist','track_popularity']].groupby('track_artist').mean('track_popularity').reset_index()
-    # top10_artists=popularity_by_artists.nlargest(10,"track_popularity")
-    # artist_min=top10_artists['track_popularity'].min()-5
-    # chart1 = alt.Chart(top10_songs).mark_bar(clip=True,color='darkgreen').encode(
-    #     x=alt.X("track_popularity",scale=alt.Scale(domain=[popularity_min,100]),title='Popularity',
-    #             axis=alt.Axis(labelColor='white', titleColor='white')),
-    #     y=alt.Y("track_name", sort='-x',title=None,
-    #             axis=alt.Axis(labelColor='white', titleColor='white')),
-    #     tooltip = [alt.Tooltip('track_name', title='Track Name'), alt.Tooltip('track_popularity', title='Popularity')]
-    # ).properties(title= alt.Title('Top 10 Songs',color='white'
-    #                               ))
-    # chart2 = alt.Chart(top10_artists).mark_bar(clip=True,color='darkgreen').encode(
-    #     x=alt.X("track_popularity",scale=alt.Scale(domain=[artist_min,100]),title='Average Popularity',
-    #             axis=alt.Axis(labelColor='white', titleColor='white')),
-    #     y=alt.Y("track_artist", sort='-x',title=None,
-    #             axis=alt.Axis(labelColor='white', titleColor='white')),
-    #     tooltip = [alt.Tooltip('track_artist', title='Artist Name'), alt.Tooltip('track_popularity', title='Average Popularity')]
-    # ).properties(title= alt.Title('Top 10 Artists',color='white'
-                                #   ))
     return top10_songs.to_dict('records')
 
+@app.callback(
+    Output('top-10-artists', 'data'),
+    [Input('apply-button-1', 'n_clicks')],
+    [State('date-picker-range-1', 'start_date'),
+     State('date-picker-range-1', 'end_date'),
+     State('genre-dropdown-1', 'value'),
+     State('subgenre-dropdown-1', 'value'),
+     State('artist-dropdown-1', 'value')]
+)
+def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,selected_genres, selected_subgenres, selected_artists):
+    filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
+    df_new=filtered_df[['track_artist','track_popularity']].drop_duplicates()
+    popularity_by_artists = df_new[['track_artist','track_popularity']].groupby('track_artist').mean('track_popularity').reset_index()
+    top10_artists=popularity_by_artists.nlargest(10,"track_popularity")
+    top10_artists['rank'] = [i for i in range(1, 11)]
+    top10_artists['track_popularity'] = round(top10_artists.track_popularity, 0)
+    return top10_artists.to_dict('records')
 
 @app.callback(
     Output('feature_scatter-chart-iframe', 'srcDoc'),
