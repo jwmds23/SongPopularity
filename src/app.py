@@ -846,6 +846,11 @@ def update_decade_trend_line(n_clicks, start_date, end_date, selected_genres, se
 )
 def update_popularity_level_distribution(n_clicks, start_date, end_date, selected_genres, selected_subgenres, selected_artists):
     alt.themes.enable('grey_bg')
+    popularity_colors = {
+        'high': '#69A053',  
+        'medium':  '#E8CC52',  
+        'low': '#5777A5', 
+    }
     filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
     sel1 = alt.selection_point(fields = ['playlist_genre'])
     sel2 = alt.selection_point(fields = ['nominal_popularity'])
@@ -856,7 +861,7 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
                 axis=alt.Axis(labelColor='white', titleColor='white')),
         y=alt.Y('sum(track_id)',title='Count of Records',
                 axis=alt.Axis(labelColor='white', titleColor='white')),
-        color= alt.Color('nominal_popularity', legend=None),
+        color= alt.Color('nominal_popularity', legend=None,scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),
         tooltip = [alt.Tooltip('nominal_popularity', title='Popularity'), alt.Tooltip('sum(track_id)', title='Count of Records')]
         ).properties(height=300,width=100).transform_filter(sel1).add_params(sel2)
     chart2=alt.Chart(filtered_df_popularity_level).mark_arc().encode(
