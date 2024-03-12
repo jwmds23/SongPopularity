@@ -237,7 +237,7 @@ tab1 =  html.Div(id='tab-1-content', children=[
                         html.Div(id='redirect-instructions', children=
                             [html.A(
                                 [html.Img(src='assets/play.png', style={'height': '25px', 'width': '25px', 'margin-top': '-1%'}),
-                                "Listen To the Music On Spotify"]
+                                "Listen to the Music on Spotify"]
                                 , id='song-link', style={'color': 'rgb(4, 184, 4)'})])
                     ],
                 ),                    
@@ -925,7 +925,7 @@ def update_decade_trend_line(n_clicks, start_date, end_date, selected_genres, se
         y=alt.Y('mean(track_popularity)',scale=alt.Scale(zero=False),title='Average Popularity',
                 axis=alt.Axis(labelColor='white', titleColor='white')),
         tooltip = [alt.Tooltip('decade', title='Decade'), alt.Tooltip('mean(track_popularity)', title='Average Popularity', format='.2f')]
-    ).properties(height=300, width=400)
+    ).properties(height=300, width=350)
     return chart.to_html()
 
 
@@ -949,21 +949,25 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
     sel1 = alt.selection_point(fields = ['playlist_genre'])
     sel2 = alt.selection_point(fields = ['nominal_popularity'])
     filtered_df_popularity_level = filtered_df[['playlist_genre','nominal_popularity','track_id']].groupby(['playlist_genre','nominal_popularity']).count().reset_index()
-    chart1=alt.Chart(filtered_df_popularity_level).mark_bar().encode(
-        x=alt.X('nominal_popularity',type='ordinal',title=None,
+    chart1=alt.Chart(filtered_df_popularity_level).mark_bar(stroke=None).encode(
+        y=alt.Y('nominal_popularity',type='ordinal',title=None,
                 sort=['low','medium','high'],
                 axis=alt.Axis(labelColor='white', titleColor='white')),
-        y=alt.Y('sum(track_id)',title='Count of Records',
-                axis=alt.Axis(labelColor='white', titleColor='white')),
+        x=alt.X('sum(track_id)',title='',axis=alt.Axis(labels=False)),
         color= alt.Color('nominal_popularity', legend=None,scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),
         tooltip = [alt.Tooltip('nominal_popularity', title='Popularity'), alt.Tooltip('sum(track_id)', title='Count of Records')]
-        ).properties(height=300,width=100).transform_filter(sel1).add_params(sel2)
+        ).properties(height=100,width=300).transform_filter(sel1).add_params(sel2)
+    text = chart1.mark_text(align='left', dx=4, baseline='middle').encode(
+    x=alt.X('sum(track_id):Q', stack='zero'),
+    text=alt.Text('sum(track_id):Q', format=','),
+    color=alt.value('white'))
+    chart1=chart1+text
     chart2=alt.Chart(filtered_df_popularity_level).mark_arc().encode(
             color=alt.Color('playlist_genre',legend=alt.Legend(title=None,labelColor='white')),
             theta='sum(track_id)',
             tooltip = [alt.Tooltip('playlist_genre', title='Genre'), alt.Tooltip('sum(track_id)', title='Count of Records')]
-        ).properties(height=300,width=150).add_params(sel1).transform_filter(sel2)
-    return (alt.hconcat(chart1, chart2).resolve_scale(color='independent')).to_html()
+        ).properties(height=200,width=300).add_params(sel1).transform_filter(sel2)
+    return (alt.vconcat(chart1, chart2,config={'axis': {'grid': False,'domain':False}}).resolve_scale(color='independent').configure_view(strokeWidth=0)).to_html()
 
 
 @app.callback(
@@ -1018,6 +1022,11 @@ def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,select
 
 def update_feature_scatter(n_clicks, select_year, f1, f2, selected_genres, selected_subgenres, selected_artists):
     alt.themes.enable('grey_bg')
+    popularity_colors = {
+        'high': '#13EC6F',  
+        'medium':  '#E8CC52',  
+        'low': '#138DEC', 
+    }
     filtered_df = update_df_2a(df, selected_genres, selected_subgenres, selected_artists)
     df_new = filtered_df[filtered_df['track_album_release_date'].dt.year == select_year][['track_name', 'track_artist', 'track_album_name', 'track_popularity', 'playlist_genre', 'nominal_popularity', f1, f2]]
     
@@ -1025,15 +1034,17 @@ def update_feature_scatter(n_clicks, select_year, f1, f2, selected_genres, selec
     sel = alt.selection_point(fields=['playlist_genre'])
     
     # Scatter plot with updated title and size
-    scatter_plot = alt.Chart(df_new).mark_circle().encode(
-        x=alt.X(f1, axis=alt.Axis(labelColor='white', titleColor='white')),
-        y=alt.Y(f2, axis=alt.Axis(labelColor='white', titleColor='white')),
+    scatter_plot = alt.Chart(df_new).mark_point().encode(
+        x=alt.X(f1, axis=alt.Axis(labelColor='white', titleColor='white',titleFontSize=12)),
+        y=alt.Y(f2, axis=alt.Axis(labelColor='white', titleColor='white',titleFontSize=12)),
+        # size='track_popularity',
         color=alt.condition(
             brush,
             'nominal_popularity',
             alt.value('grey'),
             title='Popularity',
-            legend=alt.Legend(title=None, labelColor='white')
+            legend=alt.Legend(title=None, labelColor='white',labelFontSize=15),
+            scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))
         ),
         tooltip=[alt.Tooltip('track_name', title='Track Name'), alt.Tooltip('track_artist', title='Artist'), alt.Tooltip('track_album_name', title='Album Name'), alt.Tooltip('track_popularity', title='Popularity')]
     ).properties(
@@ -1045,7 +1056,7 @@ def update_feature_scatter(n_clicks, select_year, f1, f2, selected_genres, selec
     # Bar chart with a title and size adjusted
     bar_chart = alt.Chart(df_new).mark_bar().encode(
         x=alt.X('count()', axis=alt.Axis(labelColor='white', titleColor='white')),
-        y=alt.Y('playlist_genre', title=None, axis=alt.Axis(labelColor='white', titleColor='white')),
+        y=alt.Y('playlist_genre', title=None, axis=alt.Axis(labelFontSize=12,labelColor='white', titleColor='white')),
         color=alt.Color('playlist_genre', legend=None),
         tooltip=[alt.Tooltip('playlist_genre', title='Genre'), alt.Tooltip('count()', title='Count of Records')]
     ).properties(
