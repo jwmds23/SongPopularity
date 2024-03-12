@@ -312,84 +312,6 @@ tab2_content_bivariate_scatter = html.Div(
                     ]
                 )
 
-# bivariate_scatter_filters = html.Div(children=[
-#     dbc.Row([
-#         dbc.Col(
-#             html.Div([
-#                 dbc.Row([
-#                     dbc.Col(html.Label("Release Year"), width={'size': 6, 'offset': 2}),
-#                     dbc.Col(html.Div(id='year-output'), width=4),
-#                 ]),
-#                 dbc.Row([
-#                     dbc.Col(dcc.Slider(
-#                         id='year-slider',
-#                         min=1957,
-#                         max=2021,
-#                         value=2000,
-#                         marks={i: str(i) for i in range(1960, 2021, 10)},
-#                         updatemode='drag',
-#                         step=1
-#                     ), width={'size': 9, 'offset': 2}), # Set to 12 or whatever span you need
-#                 ]),
-#                 html.Br(),
-#                     html.P("Genre"),
-#                     dcc.Dropdown(
-#                             id='genre-dropdown-2a',
-#                             options=[{'label': 'Select All', 'value': 'all'}] + [{'label': genre, 'value': genre} for genre in genre_list],
-#                             value=['all'],
-#                             multi=True,
-#                             style={'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
-#                         ),
-#                 html.Br(),
-#                 html.P("SubGenre"),
-#                 dcc.Dropdown(
-#                     id='subgenre-dropdown-2a',
-#                     options=[{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list],
-#                     value=['all'],
-#                     multi=True,
-#                     style={'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
-#                 ),
-#                 html.Br(),
-#                 html.P("Artist"),
-#                 dcc.Dropdown(
-#                     id='artist-dropdown-2a',
-#                     options=[{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list],
-#                     value=['all'],
-#                     multi=True,
-#                     style={'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
-#                 ),
-#                 html.Br(),
-#                 dbc.Row([
-#                     dbc.Col(
-#                         html.Button('Apply', id='apply-button-2a', n_clicks=0,
-#                                     style={'border': '2px solid #1f1e1e',
-#                                            'background-color': '#1f1e1e',
-#                                            'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
-#                                            'border-radius': '10px', 'margin-right': '5px'}),
-#                         width=3
-#                     ),
-#                     dbc.Col(
-#                         html.Button('Reset', id='reset-button-2a', n_clicks=0,
-#                                     style={'border': '2px solid #1f1e1e',
-#                                            'background-color': '#1f1e1e',
-#                                            'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
-#                                            'border-radius': '10px'}),
-#                         width=3
-#                     )
-#                 ])
-#             ]),
-#             #width=4
-#         )
-#     ]),
-    
-#     # dbc.Row([
-#     #     dbc.Col([
-#     #         html.Div(id='year-output'),
-#     #     ], style={'margin-left': '-30px', 'margin-top': '-5px'}, width=3)
-#     # ]),
-#    
-# ])
-
 bivariate_scatter_filters = html.Div(children=[
     dbc.Row([
         dbc.Col(html.Label("Release Year"), width=6),
@@ -585,10 +507,6 @@ tab2 = html.Div(id='tab-2-content', children=[
             ], width=8)               
         ]),
 ])
-
-# dcc.Tab(label='Prediction', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '0px', 'fontSize': 24}, 
-#                 selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 24},
-#                 value='tab-3')
 
 tab3 =  html.Div(id='tab-3-content', children=[
         dbc.Row([
@@ -1092,35 +1010,6 @@ def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,select
      Input('subgenre-dropdown-2a', 'value'),
      Input("artist-dropdown-2a", "value")]
 )
-# def update_feature_scatter(n_clicks, select_year, f1, f2, selected_genres, selected_subgenres, selected_artists):
-#     alt.themes.enable('grey_bg')
-#     filtered_df = update_df_2a(df, selected_genres, selected_subgenres, selected_artists)
-#     df_new = filtered_df[filtered_df['track_album_release_date'].dt.year == select_year][['track_name', 'track_artist', 'track_album_name', 'track_popularity', 'playlist_genre', 'nominal_popularity', f1, f2]]
-#     brush = alt.selection_interval()
-#     sel = alt.selection_point(fields=['playlist_genre'])
-#     graph = alt.Chart(df_new).mark_circle().encode(
-#         x = alt.X(f1,axis=alt.Axis(labelColor='white', titleColor='white')),
-#         y = alt.Y(f2,axis=alt.Axis(labelColor='white', titleColor='white')),
-#         color = alt.condition(
-#             brush,
-#             'nominal_popularity',
-#             alt.value('grey'),
-#             title='Popularity',
-#             legend=alt.Legend(title=None,labelColor='white')),
-#         tooltip = [alt.Tooltip('track_name',title='Track Name'), alt.Tooltip('track_artist',title='Artist'), alt.Tooltip('track_album_name',title='Album Name'), alt.Tooltip('track_popularity',title='Popularity')]
-#     ).properties(height=300).add_params(brush).transform_filter(sel)
-
-#     graph1 = alt.Chart(df_new).mark_bar().encode(
-#     x = alt.X('count()',axis=alt.Axis(labelColor='white', titleColor='white')),
-#     y = alt.Y('playlist_genre', title=None,axis=alt.Axis(labelColor='white', titleColor='white')),
-#     color = alt.Color('playlist_genre',legend=None),
-#     tooltip = [alt.Tooltip('playlist_genre',title='Genre'),alt.Tooltip('count()',title='Count of Records')]
-#     ).properties(height=100).add_params(
-#         sel
-#     ).transform_filter(
-#         brush
-#     )
-#     return (alt.vconcat(graph, graph1).resolve_scale(color='independent')).to_html()
 
 def update_feature_scatter(n_clicks, select_year, f1, f2, selected_genres, selected_subgenres, selected_artists):
     alt.themes.enable('grey_bg')
