@@ -304,7 +304,7 @@ tab1 =  html.Div(id='tab-1-content', children=[
 
 tab2_content_bivariate_scatter = html.Div(
     id='tab-2-bivariate-scatter-content', children=[    
-                        html.H3("Bivariate-Feature Scatter Plot"),
+                        html.H5("Bivariate-Feature Scatter Plot with Interactive Genre Distribution"),
                         html.Iframe(
                             id="feature_scatter-chart-iframe",
                             style={'border-width': '0', 'width': '100%', 'height': '800px'},
@@ -485,7 +485,7 @@ bivariate_scatter_filters = html.Div(children=[
 tab2_content_popularity_distribution = html.Div(id='tab-2-popularity-distribution-content',children=[
         dbc.Row([
             dbc.Col(
-                [html.H3("Popularity Distribution"),
+                [html.H5("Popularity Distribution"),
                     html.Div(id='feature-charts-container')
                 ],width="1000"
             )
@@ -499,8 +499,8 @@ popularity_distribution_filters = html.Div(children=[
                 html.P("Release Date"),
                 dcc.DatePickerRange(
                     id='date-picker-range-2',
-                    start_date=datetime.date(2020, 1, 1),
-                    start_date_placeholder_text='01/01/2020',
+                    start_date=datetime.date(2010, 1, 1),
+                    start_date_placeholder_text='01/01/2010',
                     end_date_placeholder_text='End Date',
                 ),
                 html.Br(),
@@ -574,10 +574,11 @@ tab2 = html.Div(id='tab-2-content', children=[
         dbc.Col([
             dbc.Row([
                 dcc.Tabs(id='tab-2-sub-tabs', value='tab-2-bivariate-scatter', children=[
-                    dcc.Tab(label='Bivariate Scatter Plot', value='tab-2-bivariate-scatter'),
-                    dcc.Tab(label='Popularity Distribution', value='tab-2-popularity-distribution')
+                    dcc.Tab(label='Bivariate Popularity Analysis', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '0px', 'fontSize': 20}, selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 20},value='tab-2-bivariate-scatter'),
+                    dcc.Tab(label='Multi-Feature Popularity Analysis', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '0px', 'fontSize': 20}, selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 20}, value='tab-2-popularity-distribution')
                 ]),
                 ]),
+            html.Br(),    
             dbc.Row([
                 html.Div(id='tab-2-content-placeholder'),
                 ])
@@ -585,6 +586,9 @@ tab2 = html.Div(id='tab-2-content', children=[
         ]),
 ])
 
+# dcc.Tab(label='Prediction', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '0px', 'fontSize': 24}, 
+#                 selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 24},
+#                 value='tab-3')
 
 tab3 =  html.Div(id='tab-3-content', children=[
         dbc.Row([
@@ -1140,7 +1144,7 @@ def update_feature_scatter(n_clicks, select_year, f1, f2, selected_genres, selec
         tooltip=[alt.Tooltip('track_name', title='Track Name'), alt.Tooltip('track_artist', title='Artist'), alt.Tooltip('track_album_name', title='Album Name'), alt.Tooltip('track_popularity', title='Popularity')]
     ).properties(
         title="",
-        width=400,  # Adjust width as needed
+        width=380,  # Adjust width as needed
         height=400   # Adjust height as needed
     ).add_params(brush).transform_filter(sel)
 
@@ -1151,8 +1155,8 @@ def update_feature_scatter(n_clicks, select_year, f1, f2, selected_genres, selec
         color=alt.Color('playlist_genre', legend=None),
         tooltip=[alt.Tooltip('playlist_genre', title='Genre'), alt.Tooltip('count()', title='Count of Records')]
     ).properties(
-        title="Genre Distribution",
-        width=600,  # Adjust width as needed
+        title="",
+        width=380,  # Adjust width as needed
         height=400   # Make the height the same as the scatter plot
     ).add_params(sel).transform_filter(brush)
 
