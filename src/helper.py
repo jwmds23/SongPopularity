@@ -136,7 +136,7 @@ def create_feature_distribution_charts(df, selected_features):
     selection = alt.selection_point(fields=['nominal_popularity'], bind='legend')
 
     popularity_colors = {
-        'high': '#69A053',  
+        'high': '#38AD48',  
         'medium':  '#E8CC52',  
         'low': '#5777A5', 
     }
