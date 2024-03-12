@@ -159,7 +159,7 @@ def create_feature_distribution_charts(df, selected_features):
             ).properties(
             title ={
             "text": feature.capitalize(),
-            "color": "white",  # Set title color to white
+            "color": "white",  
             },
             width = 220,
             height = 220
@@ -177,7 +177,7 @@ def create_feature_distribution_charts(df, selected_features):
             ).properties(
             title ={
             "text": feature.capitalize(),
-            "color": "white",  # Set title color to white
+            "color": "white",  
             },
             width = 220,
             height = 220
