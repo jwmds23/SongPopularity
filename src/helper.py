@@ -147,7 +147,7 @@ def create_feature_distribution_charts(df, selected_features):
     for feature in selected_features:
         # Check if the feature is 'key' or 'mode' for categorical encoding, else treat as numerical
         if feature in ['key', 'mode']:  # Categorical features
-            chart = alt.Chart(df).mark_bar(tooltip=True).encode(
+            chart = alt.Chart(df).mark_bar(tooltip=True, stroke='white', strokeWidth=0.5).encode(
                 alt.X(f"{feature}:N", sort='-y', title=feature.capitalize(),axis=alt.Axis(labelColor='white', titleColor='white')),
                 alt.Y('count()',axis=alt.Axis(labelColor='white', titleColor='white')),
                 alt.Color('nominal_popularity:N', legend=alt.Legend(title="Select Popularity Level",  titleColor='white', symbolSize= 500, labelColor='white'), scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),
@@ -161,7 +161,7 @@ def create_feature_distribution_charts(df, selected_features):
             height = 220
             )
         else:  # Numerical features
-            chart = alt.Chart(df).mark_bar().encode(
+            chart = alt.Chart(df).mark_bar(stroke='white', strokeWidth=0.5).encode(
                 alt.X(f"{feature}:Q", bin=True, title=feature.capitalize().replace(' (binned)', ''),axis=alt.Axis(labelColor='white', titleColor='white')),
                 alt.Y('count()', title=None,axis=alt.Axis(labelColor='white', titleColor='white')),
                 alt.Color('nominal_popularity:N', legend=alt.Legend(title="Select Popularity Level", titleColor='white', symbolSize= 500,labelColor='white'), scale=alt.Scale(domain=list(popularity_colors.keys()), range=list(popularity_colors.values()))),

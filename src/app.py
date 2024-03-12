@@ -499,8 +499,8 @@ popularity_distribution_filters = html.Div(children=[
                 html.P("Release Date"),
                 dcc.DatePickerRange(
                     id='date-picker-range-2',
-                    start_date=datetime.date(2010, 1, 1),
-                    start_date_placeholder_text='01/01/2010',
+                    start_date=datetime.date(2020, 1, 1),
+                    start_date_placeholder_text='01/01/2020',
                     end_date_placeholder_text='End Date',
                 ),
                 html.Br(),
