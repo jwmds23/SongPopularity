@@ -297,122 +297,216 @@ tab1 =  html.Div(id='tab-1-content', children=[
                                 'color': 'white'
                             },
                             row_selectable=None)
-                    # id="feature_scatter-chart",
-                    # children=[
-                    #     html.H4("Two-Feature Scatter Plot"),
-                    #     "Release Year",
-                    #     dbc.Row([
-                    #         dbc.Col([
-                    #             dcc.Slider(id='year-slider', 
-                    #                 min=1957, max=2021, 
-                    #                 value=2000,
-                    #                 marks={1960: '1960', 1970: '1970', 1980: '1980', 1990: '1990', 2000: '2000', 2010: '2010'},
-                    #                 updatemode='drag',
-                    #                 step=1),
-                    #             ], width=9),
-                    #         dbc.Col([
-                    #             html.Div(id='year-output')],
-                    #             style={'margin-left': '-30px', 'margin-top': '-5px'},
-                    #             width=1)]),
-                    #     dbc.Row([
-                    #         dbc.Col([
-                    #             "Feature 1",
-                    #             dcc.Dropdown(
-                    #                     id='feature1-dropdown',
-                    #                     options=[{'label': feature, 'value': feature} for feature in feature_list],
-                    #                     value='danceability',
-                    #                     multi=False,
-                    #                     style={'width': '200px','backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'} 
-                    #                 ),]),
-                    #         dbc.Col([
-                    #             "Feature 2",
-                    #             dcc.Dropdown(
-                    #                     id='feature2-dropdown',
-                    #                     options=[{'label': feature, 'value': feature} for feature in feature_list],
-                    #                     value='liveness',
-                    #                     multi=False,
-                    #                     style={'width': '200px','backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
-                    #                 ),]),
-                    #     ]),
-                    #     html.Iframe(
-                    #         id="feature_scatter-chart-iframe",
-                    #         style={'border-width': '0', 'width': '100%', 'height': '800px'},
-                    #     ),     
-                    # ],
+                    
             ]),
                 ],width="4")]
             )])
 
-tab2 =  html.Div(id='tab-2-content', children=[
+tab2_content_bivariate_scatter = html.Div(
+    id='tab-2-bivariate-scatter-content', children=[    
+                        html.H5("Bivariate-Feature Scatter Plot with Interactive Genre Distribution"),
+                        html.Iframe(
+                            id="feature_scatter-chart-iframe",
+                            style={'border-width': '0', 'width': '100%', 'height': '800px'},
+                        )     
+                    ]
+                )
+
+bivariate_scatter_filters = html.Div(children=[
+    dbc.Row([
+        dbc.Col(html.Label("Release Year"), width=6),
+        dbc.Col(html.Div(id='year-output'), width=6),
+    ]),
+    dbc.Row([
+        dbc.Col(dcc.Slider(
+            id='year-slider',
+            min=1957,
+            max=2021,
+            value=2000,
+            marks={i: str(i) for i in range(1960, 2021, 10)},
+            updatemode='drag',
+            step=1
+        ), width=12), # Set to 12 to take full width of the grid
+    ]),
+    html.Br(),
+    html.P("Genre"),
+    dbc.Row([
+        dbc.Col(dcc.Dropdown(
+                id='genre-dropdown-2a',
+                options=[{'label': 'Select All', 'value': 'all'}] + [{'label': genre, 'value': genre} for genre in genre_list],
+                value=['all'],
+                multi=True,
+                style={'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
+            ), width=12),
+    ]),
+    html.Br(),
+    html.P("SubGenre"),
+    dbc.Row([
+        dbc.Col(dcc.Dropdown(
+                id='subgenre-dropdown-2a',
+                options=[{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list],
+                value=['all'],
+                multi=True,
+                style={'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
+            ), width=12),
+    ]),
+    html.Br(),
+    html.P("Artist"),
+    dbc.Row([
+        dbc.Col(dcc.Dropdown(
+                id='artist-dropdown-2a',
+                options=[{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list],
+                value=['all'],
+                multi=True,
+                style={'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
+            ), width=12),
+    ]),
+    html.Br(),
+    
+    dbc.Row([
+        dbc.Col([
+            html.Label("Feature 1"),
+            dcc.Dropdown(
+                id='feature1-dropdown',
+                options=[{'label': feature, 'value': feature} for feature in feature_list],
+                value='danceability',
+                multi=False,
+                style={'width': '200px', 'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
+            )
+        ], width=6),
+        dbc.Col([
+            html.Label("Feature 2"),
+            dcc.Dropdown(
+                id='feature2-dropdown',
+                options=[{'label': feature, 'value': feature} for feature in feature_list],
+                value='liveness',
+                multi=False,
+                style={'width': '200px', 'backgroundColor': 'black', 'color': 'rgb(4, 184, 4)'}
+            )
+        ], width=6)
+    ]),
+    html.Br(),
+    dbc.Row([
+        dbc.Col(html.Button('Apply', id='apply-button-2a', n_clicks=0,
+                    style={'border': '2px solid #1f1e1e',
+                           'background-color': '#1f1e1e',
+                           'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
+                           'border-radius': '10px', 'margin-right': '5px'}),
+                width=3
+        ),
+        dbc.Col(html.Button('Reset', id='reset-button-2a', n_clicks=0,
+                    style={'border': '2px solid #1f1e1e',
+                           'background-color': '#1f1e1e',
+                           'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
+                           'border-radius': '10px'}),
+                width=3
+        )
+    ])
+])
+
+tab2_content_popularity_distribution = html.Div(id='tab-2-popularity-distribution-content',children=[
         dbc.Row([
             dbc.Col(
-                html.Div([
-                    feature_description_card(),
-                    html.P("Release Date"),
-                    dcc.DatePickerRange(
-                        id='date-picker-range-2',
-                        start_date_placeholder_text='Start Date',
-                        end_date_placeholder_text='End Date',
-                    ),
-                    html.Br(),
-                    html.Br(),
-                    html.P("Genre"),
-                    dcc.Dropdown(
-                        id='genre-dropdown-2',
-                        options=[{'label': 'Select All', 'value': 'all'}] + [{'label': genre, 'value': genre} for genre in genre_list],
-                        value=['all'],  # Default value
-                        multi=True,
-                        style={'backgroundColor': 'black', 'color': '#16E536'},
-                        className='custom-dropdown'
-                    ),
-                    html.Br(),
-                    html.P("SubGenre"),
-                    dcc.Dropdown(
-                        id='subgenre-dropdown-2',
-                        options=[{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list],
-                        value=['all'],  # Default value
-                        multi=True,
-                        style={'backgroundColor': 'black', 'color': '#16E536'}
-                    ),
-                    html.Br(),
-                    html.P("Artist"),
-                    dcc.Dropdown(
-                        id='artist-dropdown-2',
-                        options=[{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list],
-                        value=['all'],  # Default value
-                        multi=True,
-                        style={'backgroundColor': 'black', 'color': '#16E536'}
-                    ),
-                    html.Br(),
-                    html.P("Feature"),
-                    dcc.Dropdown(
-                        id='feature-dropdown',
-                        options=[{'label': 'Select All', 'value': 'all'}] + [{'label': feature, 'value': feature} for feature in feature_list],
-                        value=['all'],  # Default value
-                        multi=True,
-                        style={'backgroundColor': 'black', 'color': '#16E536'}
-                    ),
-                    html.Br(),
-                    dbc.Row([
-                        dbc.Col(html.Button('Apply', id='apply-button-2', n_clicks=0,
-                                            style={'border': '2px solid #1f1e1e',
-                                                    'background-color': '#1f1e1e',
-                                                    'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
-                                                    'border-radius': '10px','margin-right': '5px'}), width=3),
-                        dbc.Col(html.Button('Reset', id='reset-button-2', n_clicks=0,
-                                            style={'border': '2px solid #1f1e1e',
-                                                    'background-color': '#1f1e1e',
-                                                    'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
-                                                    'border-radius': '10px'}), width=3)
-                            ])
-                ]),width="4",
-            ),
-            dbc.Col(
-                [html.H3("Popularity Distribution"),
+                [html.H5("Popularity Distribution"),
                     html.Div(id='feature-charts-container')
-                ],width="8"
+                ],width="1000"
             )
         ])])
+     
+popularity_distribution_filters = html.Div(children=[
+    dbc.Row([
+        dbc.Col(
+            html.Div([
+                #feature_description_card(),
+                html.P("Release Date"),
+                dcc.DatePickerRange(
+                    id='date-picker-range-2',
+                    start_date=datetime.date(2010, 1, 1),
+                    start_date_placeholder_text='01/01/2010',
+                    end_date_placeholder_text='End Date',
+                ),
+                html.Br(),
+                html.P("Genre"),
+                dcc.Dropdown(
+                    id='genre-dropdown-2',
+                    options=[{'label': 'Select All', 'value': 'all'}] + [{'label': genre, 'value': genre} for genre in genre_list],
+                    value=['all'],  # Default value
+                    multi=True,
+                    style={'backgroundColor': 'black', 'color': '#16E536', 'width': '100%'},
+                    className='custom-dropdown'
+                ),
+                html.Br(),
+                html.P("SubGenre"),
+                dcc.Dropdown(
+                    id='subgenre-dropdown-2',
+                    options=[{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list],
+                    value=['all'],  # Default value
+                    multi=True,
+                    style={'backgroundColor': 'black', 'color': '#16E536', 'width': '100%'}
+                ),
+                html.Br(),
+                html.P("Artist"),
+                dcc.Dropdown(
+                    id='artist-dropdown-2',
+                    options=[{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list],
+                    value=['all'],  # Default value
+                    multi=True,
+                    style={'backgroundColor': 'black', 'color': '#16E536', 'width': '100%'}
+                ),
+                html.Br(),
+                html.P("Feature"),
+                dcc.Dropdown(
+                    id='feature-dropdown',
+                    options=[{'label': 'Select All', 'value': 'all'}] + [{'label': feature, 'value': feature} for feature in feature_list],
+                    value=['all'],  # Default value
+                    multi=True,
+                    style={'backgroundColor': 'black', 'color': '#16E536', 'width': '100%'}
+                ),
+                html.Br(),
+                dbc.Row([
+                    dbc.Col(html.Button('Apply', id='apply-button-2', n_clicks=0,
+                                        style={'border': '2px solid #1f1e1e',
+                                                'background-color': '#1f1e1e',
+                                                'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
+                                                'border-radius': '10px','margin-right': '5px'}),
+                            width={'size': 5, 'offset': 1}), # Adjust the offset and size to match your desired layout
+                    dbc.Col(html.Button('Reset', id='reset-button-2', n_clicks=0,
+                                        style={'border': '2px solid #1f1e1e',
+                                                'background-color': '#1f1e1e',
+                                                'color': 'rgb(4, 184, 4)', 'fontweight': 'bold',
+                                                'border-radius': '10px'}),
+                            width=5)
+                ])
+            ]),
+            width=12, # Set to 12 to take full width or adjust as needed
+        )
+    ])
+])
+
+
+tab2 = html.Div(id='tab-2-content', children=[
+    dbc.Row([
+        dbc.Col([
+            html.H3("Filter Menu"),
+            html.Br(),
+            # This is where the filter components will be dynamically inserted
+            html.Div(id='tab-2-filter-placeholder'),
+        ], width=4),
+        # Sub-tabs definition
+        dbc.Col([
+            dbc.Row([
+                dcc.Tabs(id='tab-2-sub-tabs', value='tab-2-bivariate-scatter', children=[
+                    dcc.Tab(label='Bivariate Popularity Analysis', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '0px', 'fontSize': 20}, selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 20},value='tab-2-bivariate-scatter'),
+                    dcc.Tab(label='Multi-Feature Popularity Analysis', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '0px', 'fontSize': 20}, selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 20}, value='tab-2-popularity-distribution')
+                ]),
+                ]),
+            html.Br(),    
+            dbc.Row([
+                html.Div(id='tab-2-content-placeholder'),
+                ])
+            ], width=8)               
+        ]),
+])
 
 tab3 =  html.Div(id='tab-3-content', children=[
         dbc.Row([
@@ -847,7 +941,7 @@ def update_decade_trend_line(n_clicks, start_date, end_date, selected_genres, se
 def update_popularity_level_distribution(n_clicks, start_date, end_date, selected_genres, selected_subgenres, selected_artists):
     alt.themes.enable('grey_bg')
     popularity_colors = {
-        'high': '#69A053',  
+        'high': '#38AD48',  
         'medium':  '#E8CC52',  
         'low': '#5777A5', 
     }
@@ -913,45 +1007,87 @@ def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,select
 
 @app.callback(
     Output('feature_scatter-chart-iframe', 'srcDoc'),
-    [Input('apply-button-1', 'n_clicks'),
+    [Input('apply-button-2a', 'n_clicks'),
      Input('year-slider','value'),
      Input('feature1-dropdown', 'value'),
-     Input('feature2-dropdown', 'value')],
-    [State('date-picker-range-1', 'start_date'),
-     State('date-picker-range-1', 'end_date'),
-     State('genre-dropdown-1', 'value'),
-     State('subgenre-dropdown-1', 'value'),
-     State('artist-dropdown-1', 'value')]   
+     Input('feature2-dropdown', 'value'),
+     Input('genre-dropdown-2a', 'value'),
+     Input('subgenre-dropdown-2a', 'value'),
+     Input("artist-dropdown-2a", "value")]
 )
-def update_feature_scatter(n_clicks, select_year, f1, f2, start_date, end_date, selected_genres, selected_subgenres, selected_artists):
+
+def update_feature_scatter(n_clicks, select_year, f1, f2, selected_genres, selected_subgenres, selected_artists):
     alt.themes.enable('grey_bg')
-    filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
+    filtered_df = update_df_2a(df, selected_genres, selected_subgenres, selected_artists)
     df_new = filtered_df[filtered_df['track_album_release_date'].dt.year == select_year][['track_name', 'track_artist', 'track_album_name', 'track_popularity', 'playlist_genre', 'nominal_popularity', f1, f2]]
+    
     brush = alt.selection_interval()
     sel = alt.selection_point(fields=['playlist_genre'])
-    graph = alt.Chart(df_new).mark_circle().encode(
-        x = alt.X(f1,axis=alt.Axis(labelColor='white', titleColor='white')),
-        y = alt.Y(f2,axis=alt.Axis(labelColor='white', titleColor='white')),
-        color = alt.condition(
+    
+    # Scatter plot with updated title and size
+    scatter_plot = alt.Chart(df_new).mark_circle().encode(
+        x=alt.X(f1, axis=alt.Axis(labelColor='white', titleColor='white')),
+        y=alt.Y(f2, axis=alt.Axis(labelColor='white', titleColor='white')),
+        color=alt.condition(
             brush,
             'nominal_popularity',
             alt.value('grey'),
             title='Popularity',
-            legend=alt.Legend(title=None,labelColor='white')),
-        tooltip = [alt.Tooltip('track_name',title='Track Name'), alt.Tooltip('track_artist',title='Artist'), alt.Tooltip('track_album_name',title='Album Name'), alt.Tooltip('track_popularity',title='Popularity')]
-    ).properties(height=300).add_params(brush).transform_filter(sel)
+            legend=alt.Legend(title=None, labelColor='white')
+        ),
+        tooltip=[alt.Tooltip('track_name', title='Track Name'), alt.Tooltip('track_artist', title='Artist'), alt.Tooltip('track_album_name', title='Album Name'), alt.Tooltip('track_popularity', title='Popularity')]
+    ).properties(
+        title="",
+        width=380,  # Adjust width as needed
+        height=400   # Adjust height as needed
+    ).add_params(brush).transform_filter(sel)
 
-    graph1 = alt.Chart(df_new).mark_bar().encode(
-    x = alt.X('count()',axis=alt.Axis(labelColor='white', titleColor='white')),
-    y = alt.Y('playlist_genre', title=None,axis=alt.Axis(labelColor='white', titleColor='white')),
-    color = alt.Color('playlist_genre',legend=None),
-    tooltip = [alt.Tooltip('playlist_genre',title='Genre'),alt.Tooltip('count()',title='Count of Records')]
-    ).properties(height=100).add_params(
-        sel
-    ).transform_filter(
-        brush
-    )
-    return (alt.vconcat(graph, graph1).resolve_scale(color='independent')).to_html()
+    # Bar chart with a title and size adjusted
+    bar_chart = alt.Chart(df_new).mark_bar().encode(
+        x=alt.X('count()', axis=alt.Axis(labelColor='white', titleColor='white')),
+        y=alt.Y('playlist_genre', title=None, axis=alt.Axis(labelColor='white', titleColor='white')),
+        color=alt.Color('playlist_genre', legend=None),
+        tooltip=[alt.Tooltip('playlist_genre', title='Genre'), alt.Tooltip('count()', title='Count of Records')]
+    ).properties(
+        title="",
+        width=380,  # Adjust width as needed
+        height=400   # Make the height the same as the scatter plot
+    ).add_params(sel).transform_filter(brush)
+
+    # Combine the plots horizontally
+    combined_plots = alt.hconcat(scatter_plot, bar_chart).resolve_scale(color='independent')
+
+    return combined_plots.to_html()
+
+def update_df_2a(df, selected_genres, selected_subgenres, selected_artists):
+    genres_list = [{'label': genre, 'value': genre} for genre in genre_list]
+    subgenres_list = [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list]
+    artists_list = [{'label': artist, 'value': artist} for artist in artist_list]
+    # Handle 'Select All' selections for each dropdown
+    selected_genres = handle_select_all(selected_genres, genres_list)
+    selected_subgenres = handle_select_all(selected_subgenres, subgenres_list)
+    selected_artists = handle_select_all(selected_artists, artists_list)
+
+    selected_genres = [] if 'all' in selected_genres else selected_genres
+    selected_subgenres = [] if 'all' in selected_subgenres else selected_subgenres
+    selected_artists = [] if 'all' in selected_artists else selected_artists
+
+    # Filter the DataFrame based on the selected genres, subgenres, and artists
+    # For genres
+    if selected_genres:
+        filtered_df = df[df['playlist_genre'].isin(selected_genres)]
+    else:
+        filtered_df = df
+
+    # For subgenres
+    if selected_subgenres:
+        filtered_df = filtered_df[filtered_df['playlist_subgenre'].isin(selected_subgenres)]
+
+    # For artists
+    if selected_artists:
+        filtered_df = filtered_df[filtered_df['track_artist'].isin(selected_artists)]
+    
+    return filtered_df
 
 @app.callback(
     Output('year-output', 'children'),
@@ -987,6 +1123,19 @@ def update_subgenre_options(selected_genres):
         options = [{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list]
         return options
     
+
+@app.callback(
+    Output('subgenre-dropdown-2a', 'options'),
+    [Input('genre-dropdown-2a', 'value')]
+)
+def update_subgenre_options(selected_genres):
+    if 'all' not in selected_genres:
+        available_subgenres = df[df['playlist_genre'].isin(selected_genres)]['playlist_subgenre'].unique()
+        options = [{'label': subgenre, 'value': subgenre} for subgenre in available_subgenres]
+        return options
+    else: 
+        options = [{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list]
+        return options
 
 
 @app.callback(
@@ -1108,6 +1257,20 @@ def update_audio_link(active_cell, rows):
             return ""
         return preview_url
     return ""
+
+@app.callback(
+    [Output('tab-2-filter-placeholder', 'children'),
+     Output('tab-2-content-placeholder', 'children')],
+    [Input('tab-2-sub-tabs', 'value')]
+)
+def render_subtab_content(selected_sub_tab):
+    if selected_sub_tab == 'tab-2-bivariate-scatter':
+        return bivariate_scatter_filters, tab2_content_bivariate_scatter
+    elif selected_sub_tab == 'tab-2-popularity-distribution':
+        return popularity_distribution_filters, tab2_content_popularity_distribution
+    else:
+        # You can provide a default or handle other cases here
+        return html.Div(), html.Div()
 
 if __name__ == "__main__":
     app.run_server(debug=True)
