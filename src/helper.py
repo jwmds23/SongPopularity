@@ -8,6 +8,7 @@ import numpy as np
 import altair as alt
 import requests
 import plotly.graph_objs as go
+from datetime import datetime as dt
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from joblib import load
@@ -24,6 +25,30 @@ dur_scalar_mm = load('src/support_model/duration_scalar_mm.joblib')
 tempo_scalar_mm = load('src/support_model/tempo_scalar_mm.joblib')
 
 def track_radar(danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, duration, key_scalar_mm=key_scalar_mm, loud_scalar_mm=loud_scalar_mm, dur_scalar_mm=dur_scalar_mm, tempo_scalar_mm=tempo_scalar_mm):
+    """
+    Create a radar chart for the given track features.
+
+    Args:
+        danceability (float): The danceability of the track.
+        energy (float): The energy of the track.
+        key (float): The key of the track.
+        loudness (float): The loudness of the track.
+        mode (float): The mode of the track.
+        speechiness (float): The speechiness of the track.
+        acousticness (float): The acousticness of the track.
+        instrumentalness (float): The instrumentalness of the track.
+        liveness (float): The liveness of the track.
+        valence (float): The valence of the track.
+        tempo (float): The tempo of the track.
+        duration (float): The duration of the track.
+        key_scalar_mm (object): MinMaxScaler object for key scaling.
+        loud_scalar_mm (object): MinMaxScaler object for loudness scaling.
+        dur_scalar_mm (object): MinMaxScaler object for duration scaling.
+        tempo_scalar_mm (object): MinMaxScaler object for tempo scaling.
+
+    Returns:
+        object: A radar chart plotly figure.
+    """
     categories = ['Danceability', 'Energy', 'Key', 'Loudness', 'Mode', 'Speechiness', 'Acousticness', 'Instrumentalness', 'Liveness', 'Valence', 'Tempo', 'Duration']
     
     # Apply scaling
@@ -64,6 +89,32 @@ def track_radar(danceability, energy, key, loudness, mode, speechiness, acoustic
     return fig
 
 def pop_predict(type, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, duration, key_scalar=key_scalar, loud_scalar=loud_scalar, tempo_scalar=tempo_scalar, dur_scalar=dur_scalar, model=model):
+    """
+    Predict the popularity of a track based on its features.
+
+    Args:
+        type (str): The genre of the track.
+        danceability (float): The danceability of the track.
+        energy (float): The energy of the track.
+        key (float): The key of the track.
+        loudness (float): The loudness of the track.
+        mode (float): The mode of the track.
+        speechiness (float): The speechiness of the track.
+        acousticness (float): The acousticness of the track.
+        instrumentalness (float): The instrumentalness of the track.
+        liveness (float): The liveness of the track.
+        valence (float): The valence of the track.
+        tempo (float): The tempo of the track.
+        duration (float): The duration of the track.
+        key_scalar (object): MinMaxScaler object for key scaling.
+        loud_scalar (object): MinMaxScaler object for loudness scaling.
+        tempo_scalar (object): MinMaxScaler object for tempo scaling.
+        dur_scalar (object): MinMaxScaler object for duration scaling.
+        model (object): The machine learning model used for prediction.
+
+    Returns:
+        float: The predicted popularity of the track.
+    """ 
     # standardize key, loud, tempo and duartion
     key = key_scalar.transform(pd.DataFrame({'key': [loudness]}))[0][0]
     loudness = loud_scalar.transform(pd.DataFrame({'loudness': [loudness]}))[0][0]
@@ -97,6 +148,15 @@ def pop_predict(type, danceability, energy, key, loudness, mode, speechiness, ac
     return model.predict(pred_df)[0]
 
 def pred_chart(result):
+    """
+    Create a prediction chart based on the given result.
+
+    Args:
+        result (float): The prediction result.
+
+    Returns:
+        str: The HTML code for the prediction chart.
+    """
     alt.themes.enable('transparent_bg')
     df_pred = pd.DataFrame({'result': [result, 100-result],
                         'category': [1, 2]})
@@ -122,6 +182,16 @@ def pred_chart(result):
 
 # handle select all options for feature tab
 def handle_select_all(selected_values, options_list):
+    """
+    Handle select all options for the feature tab.
+
+    Args:
+        selected_values (list): The list of selected values.
+        options_list (list): The list of options.
+
+    Returns:
+        list: The list of selected values excluding 'all' if it's present.
+    """
     if 'all' in selected_values:
         # Exclude 'Select All' option itself
         return [option['value'] for option in options_list if option['value'] != 'all']
@@ -129,6 +199,16 @@ def handle_select_all(selected_values, options_list):
 
 # plot function for feature tab
 def create_feature_distribution_charts(df, selected_features):
+    """
+    Create feature distribution charts for the selected features.
+
+    Args:
+        df (DataFrame): The DataFrame containing the data.
+        selected_features (list): The list of selected features.
+
+    Returns:
+        str: The HTML code for the combined feature distribution charts.
+    """
     alt.themes.enable('grey_bg')
     charts = []
     
@@ -208,6 +288,15 @@ def create_feature_distribution_charts(df, selected_features):
     return combined_chart.to_html()
 
 def music_play(track_id):
+    """
+    Get the Spotify URL for playing the given track.
+
+    Args:
+        track_id (str): The ID of the track.
+
+    Returns:
+        str: The Spotify URL for playing the track.
+    """
     client_id = os.getenv('SPOTIFY_CLIENT_ID')
     client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
 
@@ -232,3 +321,79 @@ def music_play(track_id):
     track_details = response.json()
 
     return track_details['external_urls']['spotify']
+
+# set the background of all altair graphs to transparent
+def transparent_bg():
+    """
+    Set the background of all Altair graphs to transparent.
+
+    Returns:
+        dict: Altair configuration with transparent background.
+    """
+    d = {
+        'config': {
+            'background':'#191A19',
+            'view': {
+                'height': 300,
+                'width': 300,
+            }
+        }
+    }
+    return d
+
+def grey_bg():
+    """
+    Set the background of all Altair graphs to grey.
+
+    Returns:
+        dict: Altair configuration with grey background.
+    """
+    d = {
+        'config': {
+            'background':'#888A87',
+            'view': {
+                'height': 300,
+                'width': 300,
+            }
+        }
+    }
+    return d
+
+# Format release date
+def parse_date(x):
+    """
+    Parse the date string into datetime object.
+
+    Args:
+        x (str): The date string.
+
+    Returns:
+        datetime: The parsed datetime object.
+    """
+    try:
+        if len(x)==10:
+            return dt.strptime(x, "%Y-%m-%d")
+        elif len(x)==7:
+            return dt.strptime(x, "%Y-%m")
+        elif len(x)==4:
+            return dt.strptime(x, "%Y")
+    except ValueError:
+        return None
+    
+
+# Add decade column
+def calculate_decade(date):
+    """
+    Calculate the decade based on the given date.
+
+    Args:
+        date (datetime): The date.
+
+    Returns:
+        str: The decade.
+    """
+    if isinstance(date, pd.Timestamp):
+        decade = 10 * (date.year // 10)
+        return str(decade) + 's'
+    else:
+        return None

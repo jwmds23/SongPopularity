@@ -421,3 +421,7 @@ select {
 .dash-spreadsheet-menu-item {
   display: none !important;
 }
+
+.Select-input input {
+  color: #16E536 !important;
+}
