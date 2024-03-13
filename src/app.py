@@ -822,13 +822,31 @@ def reset_all_filters(n_clicks):
     [Input('reset-button-2', 'n_clicks')]
 )
 def reset_all_filters(n_clicks):
-    start_date = None
+    start_date = '2020/01/01'
     end_date = None
     genre_value = ['all']
     subgenre_value = ['all']
     artist_value = ['all']
     feature_value = ['all']
     return start_date, end_date, genre_value,subgenre_value,artist_value,feature_value
+
+@app.callback(
+    [Output('year-slider', 'value'),
+     Output('feature1-dropdown', 'value'),
+     Output('feature2-dropdown', 'value'),
+     Output('genre-dropdown-2a', 'value'),
+     Output('subgenre-dropdown-2a', 'value'),
+     Output('artist-dropdown-2a', 'value'),],
+    [Input('reset-button-2a', 'n_clicks')]
+)
+def reset_all_filters(n_clicks):
+    year_slider = 2000
+    feature1='danceability'
+    feature2='liveness'
+    genre_value = ['all']
+    subgenre_value = ['all']
+    artist_value = ['all']
+    return year_slider,feature1,feature2,genre_value,subgenre_value,artist_value
 
 @app.callback(
     [Output('genre', 'value'),
