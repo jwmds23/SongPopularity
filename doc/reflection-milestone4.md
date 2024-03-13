@@ -1,0 +1,14 @@
+## Reflection for Milestone 4
+
+#### Dashboard Implementation:
+
+<p align="justify">We implemented three main tabs for our Spotify Song Popularity Dashboard. In the Summary tab, we created an interactive filter menu that updates several charts, providing users with insights into popularity trends, genre distributions, top 10 popular songs and artists. In particular, users can be directed to the spotify page of  the top 10 popular songs by clicking on a button.</p>
+ 
+<p align="justify">In the Explore tab of our Spotify Song Popularity Dashboard, we've integrated two analytical sub-tabs: Bivariate and Multi-Feature, to provide dynamic data exploration tools. The Bivariate sub-tab presents a scatter plot that compares two selected song features and visualizes their correlation with the song's popularity. The plot is enhanced with an interactive genre distribution bar chart, allowing users to filter and examine genre-specific trends within the bivariate context. The Multi-Feature sub-tab offers users a granular view of popularity distribution across multiple song features simultaneously. Users can select specific features such as Danceability, Energy, Loudness, Mode, and Speechiness, and the bar charts will display the count of records for each feature within a chosen popularity level.
+In the Prediction tab, we introduced a model that predicts the popularity of a song based on user-inputted features. While this tab works effectively when all inputs are filled, we recognize the necessity to improve its robustness in handling incomplete data submissions.</p>
+
+#### Improvements towards Feedback from Peer and TA:
+
+<p align="justify">In milestone 3, we received positive feedback from another team, acknowledging our work, but also highlighted a significant issue regarding the slow loading speed of our plots and the tab-switching functionality within the dashboard. To address this concern, we implemented improvements in our plot configurations by utilizing filtered and aggregated data frames instead of the original ones. This optimization resulted in a substantial increase in loading speed, with all plots now loading in less than 3 seconds.</p>
+
+<p align="justify">Additionally, in response to feedback from the TA, we explored the possibility of adding Spotify play buttons besides the top 10 popular songs. However, after researching the feasibility of playing Spotify music from our dashboard website, we found that it could not be achieved. As an alternative solution, we transformed the top 10 bar charts into tables and incorporated a Spotify web link for one popular song. Users can now select a song from the table and access the Spotify web page through the provided link to listen to it. Furthermore, the suggestion to include artists' images alongside the top 10 popular artists was noted. However, due to limitations in the app layout at this stage of development, implementing this feature is currently not feasible.</p>

@@ -1,4 +1,6 @@
-# SongPopularity 
+# Spotify Song Popularity 
+
+Heroku Deployed App: https://spotifysongpopularity-238dda98bc8e.herokuapp.com/
 
 <p align="justify">The app presents a detailed overview of song popularity on Spotify and serves as a practical tool for spotting trends, understanding the musical landscape, and making data-driven decisions in the music industry, offering users the ability to explore various metrics and their impact on a song's success. Whether you're a marketer looking to promote the next big hit or an executive deciding on which artist to sign, this dashboard provides the insights needed to stay ahead in the fast-paced world of music.</p> 
 
