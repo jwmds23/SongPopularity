@@ -1013,13 +1013,14 @@ def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,select
 
 @app.callback(
     Output('feature_scatter-chart-iframe', 'srcDoc'),
-    [Input('apply-button-2a', 'n_clicks'),
-     Input('year-slider','value'),
-     Input('feature1-dropdown', 'value'),
-     Input('feature2-dropdown', 'value'),
-     Input('genre-dropdown-2a', 'value'),
-     Input('subgenre-dropdown-2a', 'value'),
-     Input("artist-dropdown-2a", "value")]
+    [Input('apply-button-2a', 'n_clicks')],
+    [State('year-slider', 'value'),
+     State('feature1-dropdown', 'value'),
+     State('feature2-dropdown', 'value'),
+     State('genre-dropdown-2a', 'value'),
+     State('subgenre-dropdown-2a', 'value'),
+     State('artist-dropdown-2a', 'value')]
+
 )
 
 def update_feature_scatter(n_clicks, select_year, f1, f2, selected_genres, selected_subgenres, selected_artists):
