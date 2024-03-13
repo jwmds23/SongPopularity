@@ -238,7 +238,7 @@ tab1 =  html.Div(id='tab-1-content', children=[
                             [html.A(
                                 [html.Img(src='assets/play.png', style={'height': '25px', 'width': '25px', 'margin-top': '-1%'}),
                                 "Listen to the Music on Spotify"]
-                                , id='song-link', style={'color': 'rgb(4, 184, 4)'})])
+                                , id='song-link', style={'color': 'rgb(4, 184, 4)'}, target="_blank")])
                     ],
                 ),                    
                 ],width="4"),
@@ -495,11 +495,13 @@ tab2 = html.Div(id='tab-2-content', children=[
         # Sub-tabs definition
         dbc.Col([
             dbc.Row([
+                dbc.Col([
                 dcc.Tabs(id='tab-2-sub-tabs', value='tab-2-bivariate-scatter', children=[
-                    dcc.Tab(label='Bivariate Popularity Analysis', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '0px', 'fontSize': 20}, selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 20},value='tab-2-bivariate-scatter'),
-                    dcc.Tab(label='Multi-Feature Popularity Analysis', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '0px', 'fontSize': 20}, selected_style={'backgroundColor': '#116307', 'border': '0px', 'color': '#F9FCF9', 'fontSize': 20}, value='tab-2-popularity-distribution')
-                ]),
-                ]),
+                    dcc.Tab(label='Bivariate', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '2px solid rgba(0,0,0,0)', 'border-radius': '10px', 'padding': '0px', 'fontSize': 20}, selected_style={'backgroundColor': '#116307', 'border': '2px solid #116307', 'border-radius': '10px', 'padding': '0px', 'color': '#F9FCF9', 'fontSize': 20},value='tab-2-bivariate-scatter'),
+                    dcc.Tab(label='Multi-Feature', style={'backgroundColor': 'rgba(0,0,0,0)', 'border': '2px solid rgba(0,0,0,0)', 'border-radius': '10px', 'padding': '0px', 'fontSize': 20, 'margin-left': '5%'}, selected_style={'backgroundColor': '#116307', 'border': '2px solid #116307', 'border-radius': '10px', 'padding': '0px', 'color': '#F9FCF9', 'fontSize': 20, 'margin-left': '5%'}, value='tab-2-popularity-distribution')
+                ], style={'width': '300px', 'height':'40px', 'margin-right': '100px'}),
+                ], width='8')
+            ], style={'margin-top': '2%'}),
             html.Br(),    
             dbc.Row([
                 html.Div(id='tab-2-content-placeholder'),
