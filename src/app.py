@@ -182,6 +182,177 @@ def reset_all_filters(n_clicks):
     genre, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, minutes, seconds = None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     return genre, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, livenss, valence, tempo, minutes, seconds
 
+# Define callback to update filters
+@app.callback(
+    Output('year-output', 'children'),
+    Input('year-slider', 'value') 
+)
+def update_output(value):
+    return value
+
+@app.callback(
+    Output('subgenre-dropdown-1', 'options'),
+    [Input('genre-dropdown-1', 'value')]
+)
+def update_subgenre_options(selected_genres):
+    if 'all' not in selected_genres:
+        available_subgenres = df[df['playlist_genre'].isin(selected_genres)]['playlist_subgenre'].unique()
+        options = [{'label': subgenre, 'value': subgenre} for subgenre in available_subgenres]
+        return options
+    else: 
+        options = [{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list]
+        return options
+    
+
+@app.callback(
+    Output('subgenre-dropdown-2', 'options'),
+    [Input('genre-dropdown-2', 'value')]
+)
+def update_subgenre_options(selected_genres):
+    if 'all' not in selected_genres:
+        available_subgenres = df[df['playlist_genre'].isin(selected_genres)]['playlist_subgenre'].unique()
+        options = [{'label': subgenre, 'value': subgenre} for subgenre in available_subgenres]
+        return options
+    else: 
+        options = [{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list]
+        return options
+    
+
+@app.callback(
+    Output('subgenre-dropdown-2a', 'options'),
+    [Input('genre-dropdown-2a', 'value')]
+)
+def update_subgenre_options(selected_genres):
+    if 'all' not in selected_genres:
+        available_subgenres = df[df['playlist_genre'].isin(selected_genres)]['playlist_subgenre'].unique()
+        options = [{'label': subgenre, 'value': subgenre} for subgenre in available_subgenres]
+        return options
+    else: 
+        options = [{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list]
+        return options
+
+@app.callback(
+    Output('artist-dropdown-1', 'options'),
+    [Input('genre-dropdown-1', 'value'),
+     Input('subgenre-dropdown-1', 'value'),]
+)
+def update_artist_options(selected_genres,selected_subgenres):
+    if 'all' not in selected_genres:
+        if 'all' not in selected_subgenres:
+            available_artists = df[df['playlist_genre'].isin(selected_genres) & df['playlist_subgenre'].isin(selected_subgenres)]['track_artist'].unique()
+            options = [{'label': artist, 'value': artist} for artist in available_artists]
+            return options
+        else:
+            available_artists = df[df['playlist_genre'].isin(selected_genres)]['track_artist'].unique()
+            options = [{'label': artist, 'value': artist} for artist in available_artists]
+            return options
+    else: 
+        options = [{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list]
+        return options
+    
+
+@app.callback(
+    Output('artist-dropdown-2', 'options'),
+    [Input('genre-dropdown-2', 'value'),
+     Input('subgenre-dropdown-2', 'value'),]
+)
+def update_artist_options(selected_genres,selected_subgenres):
+    if 'all' not in selected_genres:
+        if 'all' not in selected_subgenres:
+            available_artists = df[df['playlist_genre'].isin(selected_genres) & df['playlist_subgenre'].isin(selected_subgenres)]['track_artist'].unique()
+            options = [{'label': artist, 'value': artist} for artist in available_artists]
+            return options
+        else:
+            available_artists = df[df['playlist_genre'].isin(selected_genres)]['track_artist'].unique()
+            options = [{'label': artist, 'value': artist} for artist in available_artists]
+            return options
+    else: 
+        options = [{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list]
+        return options
+    
+
+@app.callback(
+    Output('artist-dropdown-2a', 'options'),
+    [Input('genre-dropdown-2a', 'value'),
+     Input('subgenre-dropdown-2a', 'value'),]
+)
+def update_artist_options(selected_genres,selected_subgenres):
+    if 'all' not in selected_genres:
+        if 'all' not in selected_subgenres:
+            available_artists = df[df['playlist_genre'].isin(selected_genres) & df['playlist_subgenre'].isin(selected_subgenres)]['track_artist'].unique()
+            options = [{'label': artist, 'value': artist} for artist in available_artists]
+            return options
+        else:
+            available_artists = df[df['playlist_genre'].isin(selected_genres)]['track_artist'].unique()
+            options = [{'label': artist, 'value': artist} for artist in available_artists]
+            return options
+    else: 
+        options = [{'label': 'Select All', 'value': 'all'}] + [{'label': artist, 'value': artist} for artist in artist_list]
+        return options
+
+@app.callback(
+    Output('danceability-output', 'children'),
+    Input('danceability', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('energy-output', 'children'),
+    Input('energy', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('speechiness-output', 'children'),
+    Input('speechiness', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('acousticness-output', 'children'),
+    Input('acousticness', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('instrumentalness-output', 'children'),
+    Input('instrumentalness', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('liveness-output', 'children'),
+    Input('liveness', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('valence-output', 'children'),
+    Input('valence', 'value') 
+)
+def update_output(value):
+    return round(value, 2)
+
+@app.callback(
+    Output('loudness-output', 'children'),
+    Input('loudness', 'value') 
+)
+def update_output(value):
+    return round(value, 1)
+
+@app.callback(
+    Output('tempo-output', 'children'),
+    Input('tempo', 'value') 
+)
+def update_output(value):
+    return round(value, 0)
+
 # Define callback to update charts
 
 def update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists):
@@ -434,117 +605,6 @@ def update_df_2a(df, selected_genres, selected_subgenres, selected_artists):
     
     return filtered_df
 
-@app.callback(
-    Output('year-output', 'children'),
-    Input('year-slider', 'value') 
-)
-def update_output(value):
-    return value
-
-@app.callback(
-    Output('subgenre-dropdown-1', 'options'),
-    [Input('genre-dropdown-1', 'value')]
-)
-def update_subgenre_options(selected_genres):
-    if 'all' not in selected_genres:
-        available_subgenres = df[df['playlist_genre'].isin(selected_genres)]['playlist_subgenre'].unique()
-        options = [{'label': subgenre, 'value': subgenre} for subgenre in available_subgenres]
-        return options
-    else: 
-        options = [{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list]
-        return options
-    
-
-@app.callback(
-    Output('subgenre-dropdown-2', 'options'),
-    [Input('genre-dropdown-2', 'value')]
-)
-def update_subgenre_options(selected_genres):
-    if 'all' not in selected_genres:
-        available_subgenres = df[df['playlist_genre'].isin(selected_genres)]['playlist_subgenre'].unique()
-        options = [{'label': subgenre, 'value': subgenre} for subgenre in available_subgenres]
-        return options
-    else: 
-        options = [{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list]
-        return options
-    
-
-@app.callback(
-    Output('subgenre-dropdown-2a', 'options'),
-    [Input('genre-dropdown-2a', 'value')]
-)
-def update_subgenre_options(selected_genres):
-    if 'all' not in selected_genres:
-        available_subgenres = df[df['playlist_genre'].isin(selected_genres)]['playlist_subgenre'].unique()
-        options = [{'label': subgenre, 'value': subgenre} for subgenre in available_subgenres]
-        return options
-    else: 
-        options = [{'label': 'Select All', 'value': 'all'}] + [{'label': subgenre, 'value': subgenre} for subgenre in subgenre_list]
-        return options
-
-
-@app.callback(
-    Output('danceability-output', 'children'),
-    Input('danceability', 'value') 
-)
-def update_output(value):
-    return round(value, 2)
-
-@app.callback(
-    Output('energy-output', 'children'),
-    Input('energy', 'value') 
-)
-def update_output(value):
-    return round(value, 2)
-
-@app.callback(
-    Output('speechiness-output', 'children'),
-    Input('speechiness', 'value') 
-)
-def update_output(value):
-    return round(value, 2)
-
-@app.callback(
-    Output('acousticness-output', 'children'),
-    Input('acousticness', 'value') 
-)
-def update_output(value):
-    return round(value, 2)
-
-@app.callback(
-    Output('instrumentalness-output', 'children'),
-    Input('instrumentalness', 'value') 
-)
-def update_output(value):
-    return round(value, 2)
-
-@app.callback(
-    Output('liveness-output', 'children'),
-    Input('liveness', 'value') 
-)
-def update_output(value):
-    return round(value, 2)
-
-@app.callback(
-    Output('valence-output', 'children'),
-    Input('valence', 'value') 
-)
-def update_output(value):
-    return round(value, 2)
-
-@app.callback(
-    Output('loudness-output', 'children'),
-    Input('loudness', 'value') 
-)
-def update_output(value):
-    return round(value, 1)
-
-@app.callback(
-    Output('tempo-output', 'children'),
-    Input('tempo', 'value') 
-)
-def update_output(value):
-    return round(value, 0)
 
 @app.callback(
     [Output('pred-result', 'srcDoc'),
