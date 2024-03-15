@@ -475,7 +475,8 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
 
 
 @app.callback(
-    Output('top-10-songs', 'data'),
+    [Output('top-10-songs', 'data'),
+     Output('top-10-songs', 'tooltip_data')],
     [Input('apply-button-1', 'n_clicks')],
     [State('date-picker-range-1', 'start_date'),
      State('date-picker-range-1', 'end_date'),
@@ -484,6 +485,7 @@ def update_popularity_level_distribution(n_clicks, start_date, end_date, selecte
      State('artist-dropdown-1', 'value')]
 )
 def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,selected_genres, selected_subgenres, selected_artists):
+    #filter the top songs
     filtered_df = update_df(df, start_date, end_date, selected_genres, selected_subgenres, selected_artists)
     df_new=filtered_df[['track_id','track_name','track_artist','track_popularity']].drop_duplicates()
     popularity_by_songs = df_new.groupby('track_name').agg({
@@ -492,8 +494,12 @@ def update_top_10_popularity_songs_artists(n_clicks, start_date, end_date,select
         'track_id': 'max'
     }).reset_index()
     top10_songs = popularity_by_songs.nlargest(10,"track_popularity")
-    top10_songs['rank'] = [i for i in range(1, 11)]
-    return top10_songs.to_dict('records')
+    top10_songs['rank'] = [i for i in range(1, len(top10_songs)+1)]
+    top10_songs['track_popularity'] = round(top10_songs.track_popularity, 0)
+    # dealting with song name that is too long
+    tooltip_data=[{
+        column: {'value': str(value), 'type': 'markdown'} for column, value in row.items()} for row in top10_songs.to_dict('records')]
+    return top10_songs.to_dict('records'), tooltip_data
 
 @app.callback(
     Output('top-10-artists', 'data'),

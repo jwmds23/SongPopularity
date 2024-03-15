@@ -168,7 +168,8 @@ tab1 =  html.Div(id='tab-1-content', children=[
                                 'textAlign': 'center',
                                 'fontFamily': "Nunito",
                                 'border': '0px',
-                                'color': 'white'
+                                'color': 'white',
+                                'maxWidth': '180px'
                             },
                             style_header={
                                 'fontWeight': 'bold',
