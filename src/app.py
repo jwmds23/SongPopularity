@@ -26,6 +26,7 @@ alt.data_transformers.disable_max_rows()
 
 app = dash.Dash(
     __name__,
+    title = 'Spotify Song Popularity',
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
@@ -685,4 +686,4 @@ def render_subtab_content(selected_sub_tab):
 #------------------------------------------------------Callback  Ends Here--------------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server()
